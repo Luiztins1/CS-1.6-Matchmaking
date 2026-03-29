@@ -42,4 +42,8 @@ public class Player implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_match", referencedColumnName = "id")
     private Match match;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_lobby", referencedColumnName = "id")
+    private Lobby lobby;
 }
