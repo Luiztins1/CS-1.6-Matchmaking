@@ -25,7 +25,7 @@ public class Player implements Serializable {
     private String nickname;
 
     @Column(name = "rank", nullable = false)
-    private Integer rank;
+    private Rank rank;
 
     @Column(name = "kills", nullable = false)
     private Integer kills;
