@@ -2,6 +2,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,14 +11,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
-
-    @Autowired
-    public PlayerService(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
-    }
 
     public Player savePlayer(Player player){
         return playerRepository.save(player);

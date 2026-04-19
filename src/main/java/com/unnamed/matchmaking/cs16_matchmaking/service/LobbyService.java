@@ -2,6 +2,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.LobbyRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +12,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class LobbyService {
 
     private final LobbyRepository lobbyRepository;
-
-    @Autowired
-    public LobbyService(LobbyRepository lobbyRepository) {
-        this.lobbyRepository = lobbyRepository;
-    }
 
     public Lobby saveLobby(Lobby lobby){
         return lobbyRepository.save(lobby);

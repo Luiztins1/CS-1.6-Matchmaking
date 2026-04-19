@@ -22,6 +22,9 @@ public class Lobby implements Serializable {
     @Column(name = "id")
     private UUID id;
 
+    @Column(name = "lobby", nullable = false)
+    private String lobby;
+
     @OneToMany(mappedBy = "lobby")
     private List<Player> listLobby;
 }
