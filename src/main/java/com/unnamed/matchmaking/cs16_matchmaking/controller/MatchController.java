@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller;
 
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.service.MatchService;
@@ -22,8 +23,8 @@ public class MatchController {
     private final MatchService matchService;
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody Match match){
-        Match match1 = matchService.saveMatch(match);
+    public ResponseEntity<Object> save(@RequestBody MatchDTO matchDTO){
+        Match match1 = matchService.saveMatch(matchDTO);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -46,8 +47,8 @@ public class MatchController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody Match match){
-        Optional<Match> matchOptional = matchService.updateMatch(id, match);
+    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody MatchDTO matchDTO){
+        Optional<Match> matchOptional = matchService.updateMatch(id, matchDTO);
 
         if(matchOptional.isPresent()){
             return ResponseEntity.ok().build();

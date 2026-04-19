@@ -1,6 +1,11 @@
 package com.unnamed.matchmaking.cs16_matchmaking.service;
 
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.repository.LobbyRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.repository.MatchRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +20,24 @@ import java.util.UUID;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
+    private final LobbyRepository lobbyRepository;
+    private final MatchRepository matchRepository;
 
-    public Player savePlayer(Player player){
+    public Player savePlayer(PlayerDTO playerDTO) {
+        Match match = playerDTO.matchId() != null ? matchRepository.findById(playerDTO.matchId()).orElse(null): null;
+        Lobby lobby = playerDTO.lobbyId() != null ? lobbyRepository.findById(playerDTO.lobbyId()).orElse(null): null;
+
+        Player player = new Player(
+                null,
+                playerDTO.nickname(),
+                playerDTO.rank(),
+                playerDTO.kills(),
+                playerDTO.deaths(),
+                playerDTO.country(),
+                playerDTO.lastConnection(),
+                match,
+                lobby
+        );
         return playerRepository.save(player);
     }
 
@@ -28,16 +49,22 @@ public class PlayerService {
         playerRepository.deleteById(uuid);
     }
 
-    public Optional<Player> updatePlayer(UUID uuid, Player player){
-        return playerRepository.findById(uuid).map(existPlayer ->{
-            existPlayer.setNickname(player.getNickname());
-            existPlayer.setRank(player.getRank());
-            existPlayer.setKills(player.getKills());
-            existPlayer.setDeaths(player.getDeaths());
-            existPlayer.setCountry(player.getCountry());
-            existPlayer.setLastConection(player.getLastConection());
-            return playerRepository.save(existPlayer);
-        });
+    public Optional<Player> updatePlayer(UUID uuid, PlayerDTO playerDTO){
+        Player player = playerRepository.findById(uuid).orElseThrow();
+
+        Match match = playerDTO.matchId() != null ? matchRepository.findById(playerDTO.matchId()).orElse(null): null;
+        Lobby lobby = playerDTO.lobbyId() != null ? lobbyRepository.findById(playerDTO.lobbyId()).orElse(null): null;
+
+        player.setNickname(playerDTO.nickname());
+        player.setRank(playerDTO.rank());
+        player.setKills(playerDTO.kills());
+        player.setDeaths(playerDTO.deaths());
+        player.setCountry(playerDTO.country());
+        player.setLastConnection(playerDTO.lastConnection());
+        player.setMatch(match);
+        player.setLobby(lobby);
+
+        return Optional.of(playerRepository.save(player));
     }
 
     public Optional<Player> findByIdPlayer(UUID uuid){

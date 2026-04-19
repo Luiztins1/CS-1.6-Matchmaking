@@ -1,7 +1,5 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller.dto;
 
-import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Rank;
 
 import java.time.Instant;

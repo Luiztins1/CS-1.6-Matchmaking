@@ -6,5 +6,5 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
-public record MatchDTO<LocalTime>(GameMap map, LocalTime timeMatchMap, List<UUID> listPlayer) {
+public record MatchDTO(GameMap map, LocalTime timeMatchMap, List<UUID> listPlayer) {
 }

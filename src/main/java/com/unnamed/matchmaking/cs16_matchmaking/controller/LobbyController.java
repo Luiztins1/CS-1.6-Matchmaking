@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller;
 
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.service.LobbyService;
 import jakarta.persistence.Lob;
@@ -22,13 +23,13 @@ public class LobbyController {
     private final LobbyService lobbyService;
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody Lobby lobby){
-        Lobby lobby1 = lobbyService.saveLobby(lobby);
+    public ResponseEntity<Object> save(@RequestBody LobbyDTO lobbyDTO){
+        Lobby lobby1 = lobbyService.saveLobby(lobbyDTO);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(lobby.getId())
+                .buildAndExpand(lobby1.getId())
                 .toUri();
 
         return ResponseEntity.created(location).build();

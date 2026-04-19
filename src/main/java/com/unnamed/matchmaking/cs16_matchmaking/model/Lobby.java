@@ -25,6 +25,6 @@ public class Lobby implements Serializable {
     @Column(name = "lobby", nullable = false)
     private String lobby;
 
-    @OneToMany(mappedBy = "lobby")
+    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Player> listLobby;
 }
