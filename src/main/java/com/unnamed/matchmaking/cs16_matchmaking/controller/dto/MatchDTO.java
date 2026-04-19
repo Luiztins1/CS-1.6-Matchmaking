@@ -1,7 +1,8 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller.dto;
 
 import com.unnamed.matchmaking.cs16_matchmaking.model.GameMap;
-import jakarta.validation.constraints.NotBlank;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalTime;
@@ -9,12 +10,26 @@ import java.util.List;
 import java.util.UUID;
 
 public record MatchDTO(
-        @NotBlank(message = "It's not blank.")
+        UUID id,
+
+        @NotNull(message = "It's not null.")
         GameMap map,
 
-        @NotBlank(message = "It's not blank.")
+        @NotNull(message = "It's not null.")
         LocalTime timeMatchMap,
 
-        @NotBlank(message = "It's not blank.")
+        @NotNull(message = "It's not null.")
         List<UUID> listPlayer) {
+
+        public static MatchDTO fromEntity(Match match){
+                return new MatchDTO(
+                        match.getId(),
+                        match.getMap(),
+                        match.getTimeMatchMap(),
+                        match.getListPlayer()
+                                .stream()
+                                .map(Player::getId)
+                                .toList()
+                );
+        }
 }

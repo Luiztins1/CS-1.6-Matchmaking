@@ -1,6 +1,7 @@
 package com.unnamed.matchmaking.cs16_matchmaking.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.model.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
@@ -9,7 +10,11 @@ import com.unnamed.matchmaking.cs16_matchmaking.repository.MatchRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,6 +68,22 @@ public class PlayerService {
         player.setLastConnection(playerDTO.lastConnection());
         player.setMatch(match);
         player.setLobby(lobby);
+
+        return Optional.of(playerRepository.save(player));
+    }
+
+    public Optional<Player> updateRelationships(UUID id, UUID matchId, UUID lobbyId){
+        Player player = playerRepository.findById(id).orElseThrow();
+
+        if(matchId != null){
+            Match match = matchRepository.findById(matchId).orElseThrow();
+            player.setMatch(match);
+        }
+
+        if(lobbyId != null){
+            Lobby lobby = lobbyRepository.findById(lobbyId).orElseThrow();
+            player.setLobby(lobby);
+        }
 
         return Optional.of(playerRepository.save(player));
     }

@@ -24,7 +24,7 @@ public class MatchController {
     private final MatchService matchService;
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody @Valid MatchDTO matchDTO){
+    public ResponseEntity<MatchDTO> save(@RequestBody @Valid MatchDTO matchDTO){
         Match match1 = matchService.saveMatch(matchDTO);
 
         URI location = ServletUriComponentsBuilder
@@ -33,12 +33,15 @@ public class MatchController {
                 .buildAndExpand(match1.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(MatchDTO.fromEntity(match1));
     }
 
     @GetMapping
-    public ResponseEntity<List<Match>> findAll(){
-        List<Match> matchList = matchService.findAllMatch();
+    public ResponseEntity<List<MatchDTO>> findAll(){
+        List<MatchDTO> matchList = matchService.findAllMatch()
+                .stream()
+                .map(MatchDTO::fromEntity)
+                .toList();
 
         if(matchList.isEmpty()){
             return ResponseEntity.noContent().build();
@@ -65,13 +68,10 @@ public class MatchController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable UUID id){
-        Optional<Match> matchOptional = matchService.findByIdMatch(id);
-
-        if(matchOptional.isPresent()){
-            return ResponseEntity.ok(matchOptional.get());
-        }
-
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<MatchDTO> findById(@PathVariable UUID id){
+         return matchService.findByIdMatch(id)
+                 .map(MatchDTO::fromEntity)
+                 .map(ResponseEntity::ok)
+                 .orElse(ResponseEntity.notFound().build());
     }
 }

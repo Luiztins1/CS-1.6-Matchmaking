@@ -1,6 +1,7 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.service.LobbyService;
 import jakarta.persistence.Lob;
@@ -24,7 +25,7 @@ public class LobbyController {
     private final LobbyService lobbyService;
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody @Valid LobbyDTO lobbyDTO){
+    public ResponseEntity<LobbyDTO> save(@RequestBody @Valid LobbyDTO lobbyDTO){
         Lobby lobby1 = lobbyService.saveLobby(lobbyDTO);
 
         URI location = ServletUriComponentsBuilder
@@ -33,12 +34,15 @@ public class LobbyController {
                 .buildAndExpand(lobby1.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(LobbyDTO.fromEntity(lobby1));
     }
 
     @GetMapping
-    public ResponseEntity<List<Lobby>> findAll(){
-        List<Lobby> lobbyList = lobbyService.findAllLobby();
+    public ResponseEntity<List<LobbyDTO>> findAll(){
+        List<LobbyDTO> lobbyList = lobbyService.findAllLobby()
+                .stream()
+                .map(LobbyDTO::fromEntity)
+                .toList();
 
         if(lobbyList.isEmpty()){
             return ResponseEntity.noContent().build();
@@ -65,13 +69,10 @@ public class LobbyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findByid(@PathVariable UUID id){
-        Optional<Lobby> lobbyOptional = lobbyService.findByIdLobby(id);
-
-        if(lobbyOptional.isPresent()){
-            return ResponseEntity.ok(lobbyOptional.get());
-        }
-
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<LobbyDTO> findByid(@PathVariable UUID id){
+        return lobbyService.findByIdLobby(id)
+                .map(LobbyDTO::fromEntity)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
