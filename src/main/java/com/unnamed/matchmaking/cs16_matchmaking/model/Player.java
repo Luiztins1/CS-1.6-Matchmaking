@@ -36,8 +36,8 @@ public class Player implements Serializable {
     @Column(name = "country", length = 32, nullable = false)
     private String country;
 
-    @Column(name = "last_conection")
-    private Instant lastConection;
+    @Column(name = "last_connection")
+    private Instant lastConnection;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_match", referencedColumnName = "id")
