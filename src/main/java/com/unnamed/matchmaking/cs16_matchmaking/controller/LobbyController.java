@@ -4,6 +4,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.service.LobbyService;
 import jakarta.persistence.Lob;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class LobbyController {
     private final LobbyService lobbyService;
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody LobbyDTO lobbyDTO){
+    public ResponseEntity<Object> save(@RequestBody @Valid LobbyDTO lobbyDTO){
         Lobby lobby1 = lobbyService.saveLobby(lobbyDTO);
 
         URI location = ServletUriComponentsBuilder
@@ -47,8 +48,8 @@ public class LobbyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody  Lobby lobby){
-        Optional<Lobby> lobbyOptional = lobbyService.updateLobby(id, lobby);
+    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody  @Valid LobbyDTO lobbyDTO){
+        Optional<Lobby> lobbyOptional = lobbyService.updateLobby(id, lobbyDTO);
 
         if(lobbyOptional.isPresent()){
             return ResponseEntity.ok().build();

@@ -4,6 +4,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.service.PlayerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class PlayerController {
     private final PlayerService playerService;
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody PlayerDTO playerDTO){
+    public ResponseEntity<Object> save(@RequestBody @Valid PlayerDTO playerDTO){
         Player player1 = playerService.savePlayer(playerDTO);
 
         URI location = ServletUriComponentsBuilder
@@ -45,7 +46,7 @@ public class PlayerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody PlayerDTO playerDTO){
+    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody @Valid PlayerDTO playerDTO){
         Optional<Player> playerOptional = playerService.updatePlayer(id, playerDTO);
 
         if(playerOptional.isPresent()){

@@ -5,6 +5,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.service.MatchService;
 import jakarta.persistence.Lob;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class MatchController {
     private final MatchService matchService;
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody MatchDTO matchDTO){
+    public ResponseEntity<Object> save(@RequestBody @Valid MatchDTO matchDTO){
         Match match1 = matchService.saveMatch(matchDTO);
 
         URI location = ServletUriComponentsBuilder
@@ -47,7 +48,7 @@ public class MatchController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody MatchDTO matchDTO){
+    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody @Valid MatchDTO matchDTO){
         Optional<Match> matchOptional = matchService.updateMatch(id, matchDTO);
 
         if(matchOptional.isPresent()){
