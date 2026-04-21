@@ -3,6 +3,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.controller;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.service.MatchService;
 import jakarta.persistence.Lob;
 import jakarta.validation.Valid;
@@ -59,6 +60,13 @@ public class MatchController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}/match-map")
+    public ResponseEntity<Match> updateMatchMap(@PathVariable UUID id, @RequestParam GameMap gameMap){
+        return matchService.updateMatchMap(id, gameMap)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

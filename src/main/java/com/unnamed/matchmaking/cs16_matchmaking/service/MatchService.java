@@ -3,6 +3,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.service;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.MatchRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,14 @@ public class MatchService {
         match.setListPlayer(playerList);
 
         return Optional.of(matchRepository.save(match));
+    }
+
+    public Optional<Match> updateMatchMap(UUID id, GameMap gameMap){
+        return matchRepository.findById(id)
+                .map(mt -> {
+                    mt.setMap(gameMap);
+                    return matchRepository.save(mt);
+                });
     }
 
     public void deleteMatch(UUID uuid){
