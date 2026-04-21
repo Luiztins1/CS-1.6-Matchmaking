@@ -8,5 +8,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface MatchRepository extends JpaRepository<Match, UUID> {
-    
+
 }

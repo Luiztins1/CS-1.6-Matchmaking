@@ -1,11 +1,13 @@
 package com.unnamed.matchmaking.cs16_matchmaking.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.MatchRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,10 +23,11 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final PlayerRepository playerRepository;
 
+
     public Match saveMatch(MatchDTO matchDTO) {
        List<Player> playerList = matchDTO.listPlayer() != null ? matchDTO.listPlayer()
                        .stream()
-                       .map(id -> playerRepository.findById(id).orElseThrow())
+                       .map(id -> playerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Player não encontrado")))
                        .toList()
                : List.of();
 

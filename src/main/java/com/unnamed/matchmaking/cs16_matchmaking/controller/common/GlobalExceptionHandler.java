@@ -3,17 +3,16 @@ package com.unnamed.matchmaking.cs16_matchmaking.controller.common;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.FieldErrorDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.ResponseErrorDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.DuplicateException;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -38,8 +37,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DuplicateException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseErrorDTO duplicatePlayerException(DuplicateException e){
+        return new ResponseErrorDTO(HttpStatus.BAD_REQUEST, e.getMessage(), List.of());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseErrorDTO notFound(ResourceNotFoundException e){
         return new ResponseErrorDTO(HttpStatus.BAD_REQUEST, e.getMessage(), List.of());
     }
 }
