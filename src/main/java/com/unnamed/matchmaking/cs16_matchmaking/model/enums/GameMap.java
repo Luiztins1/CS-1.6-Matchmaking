@@ -1,4 +1,4 @@
-package com.unnamed.matchmaking.cs16_matchmaking.model;
+package com.unnamed.matchmaking.cs16_matchmaking.model.enums;
 
 import java.io.Serializable;
 

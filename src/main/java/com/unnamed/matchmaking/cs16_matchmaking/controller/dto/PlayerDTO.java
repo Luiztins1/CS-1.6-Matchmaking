@@ -1,7 +1,7 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller.dto;
 
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Rank;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.Rank;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -1,6 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller.dto;
 
-import com.unnamed.matchmaking.cs16_matchmaking.model.GameMap;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import jakarta.validation.constraints.NotNull;

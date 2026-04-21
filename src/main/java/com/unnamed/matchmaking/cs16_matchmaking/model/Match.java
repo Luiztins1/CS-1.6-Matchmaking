@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.model;
 
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

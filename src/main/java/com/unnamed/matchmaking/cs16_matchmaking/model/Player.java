@@ -1,6 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.Rank;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
