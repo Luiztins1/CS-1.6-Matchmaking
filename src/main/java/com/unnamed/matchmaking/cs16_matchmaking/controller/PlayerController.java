@@ -1,10 +1,14 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.ResponseErrorDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.DuplicateException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.service.PlayerService;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.PlayerValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,6 +24,7 @@ import java.util.UUID;
 public class PlayerController {
 
     private final PlayerService playerService;
+    private final PlayerValidator playerValidator;
 
     @PostMapping
     public ResponseEntity<PlayerDTO> save(@RequestBody @Valid PlayerDTO playerDTO){

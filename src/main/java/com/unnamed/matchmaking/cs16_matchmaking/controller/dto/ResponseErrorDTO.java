@@ -9,4 +9,8 @@ public record ResponseErrorDTO(
         String messageError,
         List<FieldErrorDTO> errorList) {
 
+    public static ResponseErrorDTO duplicateError(String messageError){
+        return new ResponseErrorDTO(HttpStatus.CONFLICT, messageError, List.of());
+    }
+
 }

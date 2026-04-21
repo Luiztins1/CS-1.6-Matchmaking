@@ -7,6 +7,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.LobbyRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.MatchRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.PlayerValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +20,14 @@ import java.util.UUID;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
+    private final PlayerValidator playerValidator;
     private final LobbyRepository lobbyRepository;
     private final MatchRepository matchRepository;
 
     public Player savePlayer(PlayerDTO playerDTO) {
         Match match = playerDTO.matchId() != null ? matchRepository.findById(playerDTO.matchId()).orElse(null): null;
         Lobby lobby = playerDTO.lobbyId() != null ? lobbyRepository.findById(playerDTO.lobbyId()).orElse(null): null;
+
 
         Player player = new Player(
                 null,
@@ -37,6 +40,7 @@ public class PlayerService {
                 match,
                 lobby
         );
+        playerValidator.validate(player);
         return playerRepository.save(player);
     }
 

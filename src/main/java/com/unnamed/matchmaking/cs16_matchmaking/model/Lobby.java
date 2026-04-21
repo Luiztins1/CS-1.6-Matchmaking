@@ -22,7 +22,7 @@ public class Lobby implements Serializable {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "lobby", nullable = false)
+    @Column(name = "lobby", length = 255, nullable = false)
     private String lobby;
 
     @Column(name = "lobby_state", nullable = false)

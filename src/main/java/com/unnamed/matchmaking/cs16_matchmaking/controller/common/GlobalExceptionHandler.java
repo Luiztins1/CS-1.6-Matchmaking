@@ -2,6 +2,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.controller.common;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.FieldErrorDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.ResponseErrorDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.DuplicateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -34,5 +35,11 @@ public class GlobalExceptionHandler {
                         .toList();
 
         return new ResponseErrorDTO(HttpStatus.BAD_REQUEST, "Campos vazios", fieldErrorDTOList);
+    }
+
+    @ExceptionHandler(DuplicateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseErrorDTO duplicatePlayerException(DuplicateException e){
+        return new ResponseErrorDTO(HttpStatus.BAD_REQUEST, e.getMessage(), List.of());
     }
 }
