@@ -13,11 +13,18 @@ target/
 .springBeans
 .sts4-cache
 
+# Docker database data
+/Postgres/
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
+out/
+
+# Credentials
+cred.env
 
 ### NetBeans ###
 /nbproject/private/
@@ -31,3 +38,5 @@ build/
 
 ### VS Code ###
 .vscode/
+
+

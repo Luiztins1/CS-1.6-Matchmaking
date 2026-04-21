@@ -1,0 +1,32 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      cs16matchmaking:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://cs16matchmaking:5432/cs16mt
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+
+  cs16matchmaking:
+    image: postgres:16
+    env_file:
+      - cred.env
+    volumes:
+      - ./Postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=cs16mt
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cs16mt -d cs16mt"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
