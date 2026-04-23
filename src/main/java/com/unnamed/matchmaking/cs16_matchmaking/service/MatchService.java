@@ -8,6 +8,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.MatchRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,11 @@ public class MatchService {
     private final PlayerRepository playerRepository;
 
 
+    @Transactional
     public Match saveMatch(MatchDTO matchDTO) {
        List<Player> playerList = matchDTO.listPlayer() != null ? matchDTO.listPlayer()
                        .stream()
-                       .map(id -> playerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Player não encontrado")))
+                       .map(id -> playerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Player não encontrado" + id)))
                        .toList()
                : List.of();
 
@@ -44,13 +46,16 @@ public class MatchService {
         return matchRepository.findAll();
     }
 
+    @Transactional
     public Optional<Match> updateMatch(UUID uuid, MatchDTO matchDTO){
-        Match match = matchRepository.findById(uuid).orElseThrow();
+        Match match = matchRepository.findById(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrado." + uuid));
 
         List<Player> playerList = matchDTO.listPlayer() != null ?
                 matchDTO.listPlayer()
                         .stream()
-                        .map(id -> playerRepository.findById(id).orElseThrow())
+                        .map(id -> playerRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException("Lista de players não encontrado." + id)))
                         .toList()
                 :List.of();
 
@@ -61,20 +66,25 @@ public class MatchService {
         return Optional.of(matchRepository.save(match));
     }
 
+    @Transactional
     public Optional<Match> updateMatchMap(UUID id, GameMap gameMap){
-        return matchRepository.findById(id)
+        return Optional.of(matchRepository.findById(id)
                 .map(mt -> {
                     mt.setMap(gameMap);
                     return matchRepository.save(mt);
-                });
+                }).orElseThrow(() -> new ResourceNotFoundException("Partida não encontrado." + id)));
     }
 
-    public void deleteMatch(UUID uuid){
-        matchRepository.deleteById(uuid);
+    @Transactional
+    public void deleteMatch(UUID uuid) {
+        Match match = matchRepository.findById(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrado." + uuid));
+        matchRepository.delete(match);
     }
 
-    public Optional<Match> findByIdMatch(UUID uuid){
-        return matchRepository.findById(uuid);
+    public Optional<Match> findByIdMatch(UUID uuid) {
+        return Optional.of(matchRepository.findById(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrado." + uuid)));
     }
 
 }

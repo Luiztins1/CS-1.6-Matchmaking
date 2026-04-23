@@ -39,12 +39,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseErrorDTO duplicatePlayerException(DuplicateException e){
-        return new ResponseErrorDTO(HttpStatus.BAD_REQUEST, e.getMessage(), List.of());
+        return new ResponseErrorDTO(HttpStatus.CONFLICT, e.getMessage(), List.of());
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseErrorDTO notFound(ResourceNotFoundException e){
-        return new ResponseErrorDTO(HttpStatus.BAD_REQUEST, e.getMessage(), List.of());
+        return new ResponseErrorDTO(HttpStatus.NOT_FOUND, e.getMessage(), List.of());
     }
 }
