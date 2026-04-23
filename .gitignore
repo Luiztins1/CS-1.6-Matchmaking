@@ -23,6 +23,10 @@ target/
 *.ipr
 out/
 
+#Yaml
+src/main/resources/application.yaml
+docker-compose.yml
+
 # Credentials
 cred.env
 

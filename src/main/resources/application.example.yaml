@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: cs16-matchmakingspring
+  datasource:
+    url: jdbc:postgresql://localhost:5433/cs16mt
+    username: usuario
+    password: senha
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  show-sql: true
