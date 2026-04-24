@@ -5,6 +5,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.Instant;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +17,7 @@ public record MatchDTO(
         GameMap map,
 
         @NotNull(message = "It's not null.")
-        LocalTime timeMatchMap,
+        Instant timeMatchMap,
 
         @NotNull(message = "It's not null.")
         List<UUID> listPlayer) {

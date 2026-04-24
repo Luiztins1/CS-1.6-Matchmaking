@@ -26,6 +26,7 @@ public class Player implements Serializable {
     private String nickname;
 
     @Column(name = "rank", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Rank rank;
 
     @Column(name = "kills", nullable = false)

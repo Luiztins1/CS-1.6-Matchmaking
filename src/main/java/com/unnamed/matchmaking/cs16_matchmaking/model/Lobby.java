@@ -26,6 +26,7 @@ public class Lobby implements Serializable {
     private String lobby;
 
     @Column(name = "lobby_state", nullable = false)
+    @Enumerated(EnumType.STRING)
     private LobbyState state;
 
     @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, orphanRemoval = true)

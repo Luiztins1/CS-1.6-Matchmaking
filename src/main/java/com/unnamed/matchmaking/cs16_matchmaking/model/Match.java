@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -24,10 +25,11 @@ public class Match implements Serializable {
     private UUID id;
 
     @Column(name = "game_map")
+    @Enumerated(EnumType.STRING)
     private GameMap map;
 
     @Column(name = "time_match_map")
-    private LocalTime timeMatchMap;
+    private Instant timeMatchMap;
 
     @OneToMany(mappedBy = "match")
     private List<Player> listPlayer;
