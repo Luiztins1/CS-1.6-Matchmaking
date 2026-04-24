@@ -3,6 +3,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.controller.dto;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
@@ -17,6 +18,9 @@ public record MatchDTO(
         GameMap map,
 
         @NotNull(message = "It's not null.")
+        MatchState matchState,
+
+        @NotNull(message = "It's not null.")
         Instant timeMatchMap,
 
         @NotNull(message = "It's not null.")
@@ -26,6 +30,7 @@ public record MatchDTO(
                 return new MatchDTO(
                         match.getId(),
                         match.getMap(),
+                        match.getMatchState(),
                         match.getTimeMatchMap(),
                         match.getListPlayer()
                                 .stream()

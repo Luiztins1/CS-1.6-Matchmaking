@@ -1,10 +1,12 @@
 package com.unnamed.matchmaking.cs16_matchmaking.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ChangeStateException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.MatchRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
@@ -29,13 +31,14 @@ public class MatchService {
     public Match saveMatch(MatchDTO matchDTO) {
        List<Player> playerList = matchDTO.listPlayer() != null ? matchDTO.listPlayer()
                        .stream()
-                       .map(id -> playerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Player não encontrado" + id)))
+                       .map(id -> playerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Player não encontrado. " + id)))
                        .toList()
                : List.of();
 
         Match match = new Match(
                 null,
                 matchDTO.map(),
+                matchDTO.matchState(),
                 matchDTO.timeMatchMap(),
                 playerList
         );
@@ -49,13 +52,13 @@ public class MatchService {
     @Transactional
     public Optional<Match> updateMatch(UUID uuid, MatchDTO matchDTO){
         Match match = matchRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrado." + uuid));
+                .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrada. " + uuid));
 
         List<Player> playerList = matchDTO.listPlayer() != null ?
                 matchDTO.listPlayer()
                         .stream()
                         .map(id -> playerRepository.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException("Lista de players não encontrado." + id)))
+                                .orElseThrow(() -> new ResourceNotFoundException("Lista de players não encontrado. " + id)))
                         .toList()
                 :List.of();
 
@@ -72,7 +75,20 @@ public class MatchService {
                 .map(mt -> {
                     mt.setMap(gameMap);
                     return matchRepository.save(mt);
-                }).orElseThrow(() -> new ResourceNotFoundException("Partida não encontrado." + id)));
+                }).orElseThrow(() -> new ResourceNotFoundException("Partida não encontrada. " + id)));
+    }
+
+    @Transactional
+    public Optional<Match> updateMatchState(UUID uuid, MatchState nextState) {
+        Match match = matchRepository.findById(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrada. "));
+
+        if(match.getMatchState().currentState(nextState)){
+            match.setMatchState(nextState);
+            return Optional.of(matchRepository.save(match));
+        }
+
+        throw new ChangeStateException("Transição de " + match.getMatchState() + " para " + nextState + " não é possível.");
     }
 
     @Transactional

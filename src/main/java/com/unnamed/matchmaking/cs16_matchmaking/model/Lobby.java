@@ -1,6 +1,5 @@
 package com.unnamed.matchmaking.cs16_matchmaking.model;
 
-import com.unnamed.matchmaking.cs16_matchmaking.model.enums.LobbyState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,10 +23,6 @@ public class Lobby implements Serializable {
 
     @Column(name = "lobby", length = 255, nullable = false)
     private String lobby;
-
-    @Column(name = "lobby_state", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private LobbyState state;
 
     @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Player> listLobby;

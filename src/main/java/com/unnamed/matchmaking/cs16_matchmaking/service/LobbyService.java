@@ -38,7 +38,6 @@ public class LobbyService {
         Lobby lobby = new Lobby(
                 null,
                 lobbyDTO.lobby(),
-                lobbyDTO.state(),
                 lobbyList
         );
 

@@ -1,9 +1,11 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ChangeStateException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.service.MatchService;
 import jakarta.persistence.Lob;
 import jakarta.validation.Valid;
@@ -65,6 +67,13 @@ public class MatchController {
     @PutMapping("/{id}/match-map")
     public ResponseEntity<Match> updateMatchMap(@PathVariable UUID id, @RequestParam GameMap gameMap){
         return matchService.updateMatchMap(id, gameMap)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/match-state")
+    public ResponseEntity<Match> updateMatchState(@PathVariable UUID id, @RequestParam MatchState nextState) {
+        return matchService.updateMatchState(id, nextState)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

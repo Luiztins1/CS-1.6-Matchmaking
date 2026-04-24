@@ -17,4 +17,8 @@ public record ResponseErrorDTO(
         return new ResponseErrorDTO(HttpStatus.BAD_REQUEST, messageError, List.of());
     }
 
+    public static ResponseErrorDTO changeState(String messageError){
+        return new ResponseErrorDTO(HttpStatus.CONFLICT, messageError, List.of());
+    }
+
 }

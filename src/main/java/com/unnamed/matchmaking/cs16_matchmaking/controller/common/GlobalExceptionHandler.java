@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.swing.text.ChangedCharSetException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -46,5 +47,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseErrorDTO notFound(ResourceNotFoundException e){
         return new ResponseErrorDTO(HttpStatus.NOT_FOUND, e.getMessage(), List.of());
+    }
+
+    @ExceptionHandler(ChangedCharSetException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseErrorDTO changeState(ChangedCharSetException e){
+        return new ResponseErrorDTO(HttpStatus.CONFLICT, e.getMessage(), List.of());
     }
 }
