@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.validator;
 
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.DuplicateException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
@@ -25,6 +26,7 @@ public class PlayerValidator {
         return playerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Player não encontrado: " + id));
     }
+
 
     public boolean duplicatePlayer(Player player){
         return playerRepository.existsByIdOrNickname(player.getId(), player.getNickname());

@@ -3,6 +3,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.service;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.PlayerMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.LobbyRepository;
@@ -24,79 +25,32 @@ import java.util.UUID;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
-    private final PlayerValidator playerValidator;
-    private final LobbyRepository lobbyRepository;
-    private final MatchRepository matchRepository;
-    private final MatchValidator matchValidator;
-    private final LobbyValidator lobbyValidator;
+    private final PlayerMapper playerMapper;
 
     @Transactional
     public Player savePlayer(PlayerDTO playerDTO) {
-        Match match = playerDTO.matchId() != null ? matchRepository.findById(playerDTO.matchId()).orElse(null): null;
-        Lobby lobby = playerDTO.lobbyId() != null ? lobbyRepository.findById(playerDTO.lobbyId()).orElse(null): null;
-
-
-        Player player = new Player(
-                null,
-                playerDTO.nickname(),
-                playerDTO.rank(),
-                playerDTO.kills(),
-                playerDTO.deaths(),
-                playerDTO.country(),
-                playerDTO.lastConnection(),
-                match,
-                lobby
-        );
-        playerValidator.validateDuplicate(player);
-        return playerRepository.save(player);
+        return playerRepository.save(playerMapper.createPlayer(playerDTO));
     }
 
     public List<Player> findAllPlayer(){
         return playerRepository.findAll();
     }
 
-    public void deletePlayer(UUID uuid){
-        Player player = playerValidator.validateSource(uuid);
-        playerRepository.delete(player);
+    public void deletePlayer(UUID id){
+        playerRepository.delete(playerMapper.deletePlayer(id));
     }
 
     @Transactional
-    public Optional<Player> updatePlayer(UUID uuid, PlayerDTO playerDTO){
-        Player player = playerValidator.validateSource(uuid);
-
-        Match match = playerDTO.matchId() != null ? matchRepository.findById(playerDTO.matchId()).orElse(null): null;
-        Lobby lobby = playerDTO.lobbyId() != null ? lobbyRepository.findById(playerDTO.lobbyId()).orElse(null): null;
-
-        player.setNickname(playerDTO.nickname());
-        player.setRank(playerDTO.rank());
-        player.setKills(playerDTO.kills());
-        player.setDeaths(playerDTO.deaths());
-        player.setCountry(playerDTO.country());
-        player.setLastConnection(playerDTO.lastConnection());
-        player.setMatch(match);
-        player.setLobby(lobby);
-
-        return Optional.of(playerRepository.save(player));
+    public Optional<Player> updatePlayer(UUID id, PlayerDTO playerDTO){
+        return Optional.of(playerRepository.save(playerMapper.updatePlayer(id, playerDTO)));
     }
 
     @Transactional
     public Optional<Player> updateRelationships(UUID id, UUID matchId, UUID lobbyId){
-        Player player = playerValidator.validateSource(id);
-
-        if(matchId != null){
-            Match match = matchValidator.validateSource(matchId);
-            player.setMatch(match);
-        }
-
-        if(lobbyId != null){
-            Lobby lobby = lobbyValidator.validateSource(lobbyId);
-            player.setLobby(lobby);
-        }
-
-        return Optional.of(playerRepository.save(player));
+        return Optional.of(playerRepository.save(playerMapper.updateRelationships(id, matchId, lobbyId)));
     }
 
-    public Optional<Player> findByIdPlayer(UUID uuid){
-        return Optional.of(playerValidator.validateSource(uuid));
+    public Optional<Player> findByIdPlayer(UUID id){
+        return Optional.of(playerMapper.findByIdPlayer(id));
     }
 }

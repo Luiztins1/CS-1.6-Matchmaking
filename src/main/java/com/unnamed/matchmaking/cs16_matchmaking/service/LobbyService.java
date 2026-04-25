@@ -3,6 +3,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.service;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.LobbyMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.LobbyRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
@@ -26,26 +27,11 @@ import java.util.UUID;
 public class LobbyService {
 
     private final LobbyRepository lobbyRepository;
-    private final PlayerRepository playerRepository;
-    private final PlayerValidator playerValidator;
-    private final LobbyValidator lobbyValidator;
+    private final LobbyMapper lobbyMapper;
 
     @Transactional
     public Lobby saveLobby(LobbyDTO lobbyDTO){
-        List<Player> lobbyList = lobbyDTO.listLobby() != null ?
-                lobbyDTO.listLobby()
-                        .stream()
-                        .map(playerValidator::validateSource)
-                        .toList()
-                : List.of();
-
-        Lobby lobby = new Lobby(
-                null,
-                lobbyDTO.lobby(),
-                lobbyList
-        );
-
-        return lobbyRepository.save(lobby);
+        return lobbyRepository.save(lobbyMapper.createLobby(lobbyDTO));
     }
 
     public List<Lobby> findAllLobby(){
@@ -53,27 +39,16 @@ public class LobbyService {
     }
 
     @Transactional
-    public Optional<Lobby> updateLobby(UUID uuid, LobbyDTO lobbyDTO){
-        Lobby lobby = lobbyRepository.findById(uuid).orElseThrow();
-
-        List<Player> playerList = lobbyDTO.listLobby() != null ? lobbyDTO.listLobby()
-                .stream()
-                .map(id -> playerRepository.findById(id).orElseThrow())
-                .toList()
-                :List.of();
-        lobby.setLobby(lobbyDTO.lobby());
-        lobby.setListLobby(playerList);
-
-        return Optional.of(lobbyRepository.save(lobby));
+    public Optional<Lobby> updateLobby(UUID id, LobbyDTO lobbyDTO){
+        return Optional.of(lobbyMapper.updateLobby(id, lobbyDTO));
     }
 
     @Transactional
-    public void deleteLobby(UUID uuid){
-        Lobby lobby = lobbyValidator.validateSource(uuid);
-        lobbyRepository.delete(lobby);
+    public void deleteLobby(UUID id){
+        lobbyRepository.delete(lobbyMapper.deleteLobby(id));
     }
 
-    public Optional<Lobby> findByIdLobby(UUID uuid){
-        return Optional.of(lobbyValidator.validateSource(uuid));
+    public Optional<Lobby> findByIdLobby(UUID id){
+        return Optional.of(lobbyMapper.findByIdLobby(id));
     }
 }

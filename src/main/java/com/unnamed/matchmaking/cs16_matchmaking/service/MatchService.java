@@ -3,6 +3,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.service;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ChangeStateException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.MatchMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
@@ -25,27 +26,11 @@ import java.util.UUID;
 public class MatchService {
 
     private final MatchRepository matchRepository;
-    private final PlayerRepository playerRepository;
-    private final MatchValidator matchValidator;
-    private final PlayerValidator playerValidator;
-
+    private final MatchMapper matchMapper;
 
     @Transactional
     public Match saveMatch(MatchDTO matchDTO) {
-       List<Player> playerList = matchDTO.listPlayer() != null ? matchDTO.listPlayer()
-                       .stream()
-                       .map(id -> playerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Player não encontrado. " + id)))
-                       .toList()
-               : List.of();
-
-        Match match = new Match(
-                null,
-                matchDTO.map(),
-                matchDTO.matchState(),
-                matchDTO.timeMatchMap(),
-                playerList
-        );
-        return matchRepository.save(match);
+        return matchRepository.save(matchMapper.createMatch(matchDTO));
     }
 
     public List<Match> findAllMatch(){
@@ -53,43 +38,27 @@ public class MatchService {
     }
 
     @Transactional
-    public Optional<Match> updateMatch(UUID uuid, MatchDTO matchDTO){
-        Match match = matchValidator.validateSource(uuid);
-
-        List<Player> playerList = matchDTO.listPlayer() != null ?
-                matchDTO.listPlayer()
-                        .stream()
-                        .map(playerValidator::validateSource)
-                        .toList()
-                :List.of();
-
-        match.setMap(matchDTO.map());
-        match.setTimeMatchMap(matchDTO.timeMatchMap());
-        match.setListPlayer(playerList);
-
-        return Optional.of(matchRepository.save(match));
+    public Optional<Match> updateMatch(UUID id, MatchDTO matchDTO){
+        return Optional.of(matchRepository.save(matchMapper.updateMatch(id, matchDTO)));
     }
 
     @Transactional
     public Optional<Match> updateMatchMap(UUID id, GameMap gameMap){
-        Match match = matchValidator.validateSource(id);
-        match.setMap(gameMap);
-        return Optional.of(matchRepository.save(match));
+        return Optional.of(matchRepository.save(matchMapper.updateMatchMap(id, gameMap)));
     }
 
     @Transactional
-    public Optional<Match> updateMatchState(UUID uuid, MatchState nextState) {
-       return Optional.of(matchValidator.validateState(uuid, nextState));
+    public Optional<Match> updateMatchState(UUID id, MatchState nextState) {
+       return Optional.of(matchMapper.updateMatchState(id, nextState));
     }
 
     @Transactional
-    public void deleteMatch(UUID uuid) {
-        Match match = matchValidator.validateSource(uuid);
-        matchRepository.delete(match);
+    public void deleteMatch(UUID id) {
+        matchRepository.delete(matchMapper.deleteMatch(id));
     }
 
-    public Optional<Match> findByIdMatch(UUID uuid) {
-        return Optional.of(matchValidator.validateSource(uuid));
+    public Optional<Match> findByIdMatch(UUID id) {
+        return Optional.of(matchMapper.findByIdMatch(id));
     }
 
 }

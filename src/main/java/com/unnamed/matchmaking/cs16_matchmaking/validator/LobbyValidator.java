@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.validator;
 
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
@@ -18,5 +19,12 @@ public class LobbyValidator {
     public Lobby validateSource(UUID id){
         return lobbyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lobby não encontrado: " + id));
+    }
+
+    public Lobby validateIdForReturnNullMapper(PlayerDTO playerDTO){
+        if(playerDTO.lobbyId() == null){
+            return null;
+        }
+        return validateSource(playerDTO.lobbyId());
     }
 }
