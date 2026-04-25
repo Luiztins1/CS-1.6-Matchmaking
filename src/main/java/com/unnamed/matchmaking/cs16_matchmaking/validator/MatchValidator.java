@@ -1,13 +1,14 @@
 package com.unnamed.matchmaking.cs16_matchmaking.validator;
 
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ChangeStateException;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.MatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -15,8 +16,20 @@ public class MatchValidator {
 
     private final MatchRepository matchRepository;
 
-    public void valitade(Match match){
+    public Match validateSource(UUID id){
+        return matchRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrada: " + id));
+    }
 
+    public Match validateState(UUID id, MatchState nextState){
+        Match match = validateSource(id);
+
+        if(match.getMatchState().currentState(nextState)){
+            match.setMatchState(nextState);
+            matchRepository.save(match);
+        }
+
+        throw new ChangeStateException("Transição de " + match.getMatchState() + " para " + nextState + " não é possível.");
     }
 
 }

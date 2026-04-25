@@ -2,6 +2,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.controller.common;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.FieldErrorDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.ResponseErrorDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ChangeStateException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.DuplicateException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -49,9 +50,9 @@ public class GlobalExceptionHandler {
         return new ResponseErrorDTO(HttpStatus.NOT_FOUND, e.getMessage(), List.of());
     }
 
-    @ExceptionHandler(ChangedCharSetException.class)
+    @ExceptionHandler(ChangeStateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseErrorDTO changeState(ChangedCharSetException e){
+    public ResponseErrorDTO changeState(ChangeStateException e){
         return new ResponseErrorDTO(HttpStatus.CONFLICT, e.getMessage(), List.of());
     }
 }

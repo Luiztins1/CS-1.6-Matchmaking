@@ -10,6 +10,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.MatchRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.PlayerValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class MatchService {
 
     private final MatchRepository matchRepository;
     private final PlayerRepository playerRepository;
+    private final MatchValidator matchValidator;
+    private final PlayerValidator playerValidator;
 
 
     @Transactional
@@ -51,14 +54,12 @@ public class MatchService {
 
     @Transactional
     public Optional<Match> updateMatch(UUID uuid, MatchDTO matchDTO){
-        Match match = matchRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrada. " + uuid));
+        Match match = matchValidator.validateSource(uuid);
 
         List<Player> playerList = matchDTO.listPlayer() != null ?
                 matchDTO.listPlayer()
                         .stream()
-                        .map(id -> playerRepository.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException("Lista de players não encontrado. " + id)))
+                        .map(playerValidator::validateSource)
                         .toList()
                 :List.of();
 
@@ -71,36 +72,24 @@ public class MatchService {
 
     @Transactional
     public Optional<Match> updateMatchMap(UUID id, GameMap gameMap){
-        return Optional.of(matchRepository.findById(id)
-                .map(mt -> {
-                    mt.setMap(gameMap);
-                    return matchRepository.save(mt);
-                }).orElseThrow(() -> new ResourceNotFoundException("Partida não encontrada. " + id)));
+        Match match = matchValidator.validateSource(id);
+        match.setMap(gameMap);
+        return Optional.of(matchRepository.save(match));
     }
 
     @Transactional
     public Optional<Match> updateMatchState(UUID uuid, MatchState nextState) {
-        Match match = matchRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrada. "));
-
-        if(match.getMatchState().currentState(nextState)){
-            match.setMatchState(nextState);
-            return Optional.of(matchRepository.save(match));
-        }
-
-        throw new ChangeStateException("Transição de " + match.getMatchState() + " para " + nextState + " não é possível.");
+       return Optional.of(matchValidator.validateState(uuid, nextState));
     }
 
     @Transactional
     public void deleteMatch(UUID uuid) {
-        Match match = matchRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrado." + uuid));
+        Match match = matchValidator.validateSource(uuid);
         matchRepository.delete(match);
     }
 
     public Optional<Match> findByIdMatch(UUID uuid) {
-        return Optional.of(matchRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrado." + uuid)));
+        return Optional.of(matchValidator.validateSource(uuid));
     }
 
 }

@@ -6,6 +6,8 @@ import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.LobbyRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.LobbyValidator;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.PlayerValidator;
 import jakarta.persistence.Lob;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +27,15 @@ public class LobbyService {
 
     private final LobbyRepository lobbyRepository;
     private final PlayerRepository playerRepository;
+    private final PlayerValidator playerValidator;
+    private final LobbyValidator lobbyValidator;
 
     @Transactional
     public Lobby saveLobby(LobbyDTO lobbyDTO){
         List<Player> lobbyList = lobbyDTO.listLobby() != null ?
                 lobbyDTO.listLobby()
                         .stream()
-                        .map(id -> playerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Jogador não encontrado." + id)))
+                        .map(playerValidator::validateSource)
                         .toList()
                 : List.of();
 
@@ -65,13 +69,11 @@ public class LobbyService {
 
     @Transactional
     public void deleteLobby(UUID uuid){
-        Lobby lobby = lobbyRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Lobby não encontrado." + uuid));
+        Lobby lobby = lobbyValidator.validateSource(uuid);
         lobbyRepository.delete(lobby);
     }
 
     public Optional<Lobby> findByIdLobby(UUID uuid){
-        return Optional.of(lobbyRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Lobby não encontrado." + uuid)));
+        return Optional.of(lobbyValidator.validateSource(uuid));
     }
 }

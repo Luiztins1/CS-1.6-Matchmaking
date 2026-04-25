@@ -8,6 +8,8 @@ import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.LobbyRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.MatchRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.LobbyValidator;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.PlayerValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,8 @@ public class PlayerService {
     private final PlayerValidator playerValidator;
     private final LobbyRepository lobbyRepository;
     private final MatchRepository matchRepository;
+    private final MatchValidator matchValidator;
+    private final LobbyValidator lobbyValidator;
 
     @Transactional
     public Player savePlayer(PlayerDTO playerDTO) {
@@ -43,7 +47,7 @@ public class PlayerService {
                 match,
                 lobby
         );
-        playerValidator.validate(player);
+        playerValidator.validateDuplicate(player);
         return playerRepository.save(player);
     }
 
@@ -52,15 +56,13 @@ public class PlayerService {
     }
 
     public void deletePlayer(UUID uuid){
-        Player player = playerRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Jogador não encontrado." + uuid));
+        Player player = playerValidator.validateSource(uuid);
         playerRepository.delete(player);
     }
 
     @Transactional
     public Optional<Player> updatePlayer(UUID uuid, PlayerDTO playerDTO){
-        Player player = playerRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Jogador não encontrado." + uuid));
+        Player player = playerValidator.validateSource(uuid);
 
         Match match = playerDTO.matchId() != null ? matchRepository.findById(playerDTO.matchId()).orElse(null): null;
         Lobby lobby = playerDTO.lobbyId() != null ? lobbyRepository.findById(playerDTO.lobbyId()).orElse(null): null;
@@ -79,18 +81,15 @@ public class PlayerService {
 
     @Transactional
     public Optional<Player> updateRelationships(UUID id, UUID matchId, UUID lobbyId){
-        Player player = playerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Jogador não encontrado." + id));
+        Player player = playerValidator.validateSource(id);
 
         if(matchId != null){
-            Match match = matchRepository.findById(matchId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Partida não encontrado." + matchId));
+            Match match = matchValidator.validateSource(matchId);
             player.setMatch(match);
         }
 
         if(lobbyId != null){
-            Lobby lobby = lobbyRepository.findById(lobbyId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Lobby não encontrado." + lobbyId));
+            Lobby lobby = lobbyValidator.validateSource(lobbyId);
             player.setLobby(lobby);
         }
 
@@ -98,7 +97,6 @@ public class PlayerService {
     }
 
     public Optional<Player> findByIdPlayer(UUID uuid){
-        return Optional.of(playerRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Jogador não encontrado." + uuid)));
+        return Optional.of(playerValidator.validateSource(uuid));
     }
 }
