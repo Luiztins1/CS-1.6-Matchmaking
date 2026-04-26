@@ -1,6 +1,8 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller;
 
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ChangeStateException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
@@ -20,7 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/match")
+@RequestMapping("/v1/matches")
 @RequiredArgsConstructor
 public class MatchController {
 

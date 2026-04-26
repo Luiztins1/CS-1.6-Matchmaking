@@ -16,7 +16,7 @@ import java.util.UUID;
 public record MatchDTO(
         UUID id,
 
-        @NotBlank(message = "K")
+        @NotBlank(message = "It's not blank.")
         String nameMatch,
 
         @NotNull(message = "It's not null.")

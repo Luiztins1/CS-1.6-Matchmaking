@@ -1,6 +1,8 @@
 package com.unnamed.matchmaking.cs16_matchmaking.service;
 
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.MatchMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
@@ -34,6 +36,7 @@ public class MatchService {
         return Optional.of(matchRepository.save(matchMapper.updateMatch(id, matchDTO)));
     }
 
+    @Deprecated
     @Transactional
     public Optional<Match> updateMatchMap(UUID id, GameMap gameMap){
         return Optional.of(matchRepository.save(matchMapper.updateMatchMap(id, gameMap)));

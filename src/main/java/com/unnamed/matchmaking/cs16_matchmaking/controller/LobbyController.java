@@ -2,6 +2,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.controller;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.service.LobbyService;
 import jakarta.persistence.Lob;
@@ -18,7 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/lobby")
+@RequestMapping("/v1/lobbies")
 @RequiredArgsConstructor
 public class LobbyController {
 
@@ -52,6 +53,7 @@ public class LobbyController {
         return ResponseEntity.ok(lobbyList);
     }
 
+    @Deprecated
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody  @Valid LobbyDTO lobbyDTO){
         Optional<Lobby> lobbyOptional = lobbyService.updateLobby(id, lobbyDTO);
@@ -63,10 +65,31 @@ public class LobbyController {
         return ResponseEntity.notFound().build();
     }
 
+    @PutMapping("/{id}/list-player")
+    public ResponseEntity<List<PlayerDTO>> updateListLobbyPlayer(
+            @PathVariable UUID id,
+            @RequestParam UUID matchId,
+            @RequestParam UUID playerId){
+        return lobbyService.updateListLobbyPlayer(matchId, playerId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @Deprecated
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id){
         lobbyService.deleteLobby(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}/delete-list-player")
+    public ResponseEntity<Void> deleteListLobbyPlayer(
+            @PathVariable UUID id,
+            @RequestParam UUID matchId,
+            @RequestParam UUID playerId
+            ){
+
+        lobbyService.deleteListLobbyPlayer(matchId, playerId);
         return ResponseEntity.noContent().build();
     }
 

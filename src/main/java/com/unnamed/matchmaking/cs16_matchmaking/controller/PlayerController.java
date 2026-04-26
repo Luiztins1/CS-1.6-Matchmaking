@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/player")
+@RequestMapping("/v1/players")
 @RequiredArgsConstructor
 public class PlayerController {
 

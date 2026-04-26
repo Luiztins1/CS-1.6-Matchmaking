@@ -1,13 +1,17 @@
 package com.unnamed.matchmaking.cs16_matchmaking.model.Mapper;
 
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.InteractionEvent;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.PlayerValidator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -55,6 +59,7 @@ public class MatchMapper {
         return match;
     }
 
+    @Deprecated
     public Match updateMatch(UUID uuid, MatchDTO matchDTO){
         Match match = matchValidator.validateSource(uuid);
 
@@ -65,7 +70,9 @@ public class MatchMapper {
                         .toList()
                 :List.of();
 
+        match.setNameMatch(matchDTO.nameMatch());
         match.setMap(matchDTO.map());
+        match.setMatchState(matchDTO.matchState());
         match.setTimeMatchMap(matchDTO.timeMatchMap());
         match.setListPlayer(playerList);
 
@@ -91,7 +98,6 @@ public class MatchMapper {
                 player.setLobby(null);
             });
         }
-
         return match;
     }
 
