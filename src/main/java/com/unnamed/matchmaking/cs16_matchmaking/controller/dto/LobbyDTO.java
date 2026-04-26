@@ -1,7 +1,9 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller.dto;
 
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.TypeMatchEvent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -13,15 +15,22 @@ public record LobbyDTO(
         UUID id,
 
         @NotBlank(message = "String can't empty.")
-        String lobby,
+        String name,
 
         @NotNull(message = "It's not null.")
-        List<UUID> listLobby) {
+        UUID matchLobby,
+
+        TypeMatchEvent typeMatchEvent,
+
+        @NotNull(message = "It's not null.")
+        List<UUID> listLobbyPlayer) {
         public static LobbyDTO fromEntity(Lobby lobby){
                 return new LobbyDTO(
                         lobby.getId(),
-                        lobby.getLobby(),
-                        lobby.getListLobby()
+                        lobby.getName(),
+                        lobby.getMatchLobby().getId(),
+                        lobby.getTypeMatchEvent(),
+                        lobby.getListLobbyPlayer()
                                 .stream()
                                 .map(Player::getId)
                                 .toList()

@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.model;
 
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.TypeMatchEvent;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,18 +13,34 @@ import java.util.UUID;
 @Entity
 @Table(name = "lobby")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Lobby implements Serializable {
+
+    public Lobby(UUID id, String name, Match matchLobby, List<Player> listLobbyPlayer){
+        this.id = id;
+        this.name = name;
+        this.matchLobby = matchLobby;
+        typeMatchEvent = TypeMatchEvent.DEFAULT;
+        this.listLobbyPlayer = listLobbyPlayer;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "lobby", length = 255, nullable = false)
-    private String lobby;
+    @Column(name = "name", length = 255, nullable = false)
+    private String name;
 
-    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Player> listLobby;
+    @OneToOne
+    @JoinColumn(name = "match_lobby_id", referencedColumnName = "id")
+    private Match matchLobby;
+
+    @Column(name = "type_match_event", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TypeMatchEvent typeMatchEvent;
+
+    @OneToMany(mappedBy = "lobby", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Player> listLobbyPlayer;
+
 }

@@ -24,6 +24,7 @@ public class LobbyController {
 
     private final LobbyService lobbyService;
 
+    @Deprecated
     @PostMapping
     public ResponseEntity<LobbyDTO> save(@RequestBody @Valid LobbyDTO lobbyDTO){
         Lobby lobby1 = lobbyService.saveLobby(lobbyDTO);
@@ -62,6 +63,7 @@ public class LobbyController {
         return ResponseEntity.notFound().build();
     }
 
+    @Deprecated
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id){
         lobbyService.deleteLobby(id);

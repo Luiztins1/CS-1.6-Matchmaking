@@ -1,12 +1,11 @@
 package com.unnamed.matchmaking.cs16_matchmaking.model.Mapper;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
-import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.PlayerValidator;
 import lombok.RequiredArgsConstructor;
@@ -31,13 +30,28 @@ public class MatchMapper {
 
         Match match = new Match(
                 null,
+                matchDTO.nameMatch(),
                 matchDTO.map(),
                 matchDTO.matchState(),
                 matchDTO.timeMatchMap(),
+                null,
                 playerList
         );
 
-        playerList.forEach(player -> player.setMatch(match));
+        Lobby lobby = new Lobby(
+                null,
+                matchDTO.nameMatch(),
+                match,
+                playerList
+        );
+
+        match.setLobbyMatch(lobby);
+
+        playerList.forEach(player -> {
+            player.setMatch(match);
+            player.setLobby(lobby);
+        });
+
         return match;
     }
 
@@ -69,7 +83,16 @@ public class MatchMapper {
     }
 
     public Match deleteMatch(UUID id){
-        return matchValidator.validateSource(id);
+        Match match = matchValidator.validateSource(id);
+
+        if(match.getListPlayer() != null){
+            match.getListPlayer().forEach(player -> {
+                player.setMatch(null);
+                player.setLobby(null);
+            });
+        }
+
+        return match;
     }
 
     public Match findByIdMatch(UUID id){
