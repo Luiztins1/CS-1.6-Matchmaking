@@ -6,6 +6,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.LobbyValidator;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.PlayerValidator;
@@ -93,6 +94,8 @@ public class LobbyMapper {
 
         player.setLobby(null);
         player.setMatch(null);
+        lobby.setMatchLobby(match);
+
 
     }
 

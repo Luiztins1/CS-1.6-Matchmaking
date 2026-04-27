@@ -80,9 +80,7 @@ public class MatchMapper {
     }
 
     public Match updateMatchMap(UUID id, GameMap gameMap){
-        Match match = matchValidator.validateSource(id);
-        match.setMap(gameMap);
-        return match;
+        return matchValidator.validateSource(id);
     }
 
     public Match updateMatchState(UUID id, MatchState nextState){

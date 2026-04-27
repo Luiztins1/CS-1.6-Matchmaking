@@ -11,14 +11,7 @@ public enum MatchState {
     WAITING{
         @Override
         public boolean currentState(MatchState nextState){
-            return nextState == STARTING || nextState == CANCELED;
-        }
-    },
-
-    STARTING{
-        @Override
-        public boolean currentState(MatchState nextState){
-            return nextState == READY_MATCH || nextState == CANCELED;
+            return nextState == READY_MATCH || nextState == COLD || nextState == CANCELED;
         }
     },
 
@@ -29,7 +22,13 @@ public enum MatchState {
         }
     },
 
-    FINISHED,
+    FINISHED{
+        @Override
+        public boolean currentState(MatchState nextState) {
+            return nextState == COLD || nextState == CANCELED;
+        }
+    },
+
     CANCELED;
 
     public boolean currentState(MatchState nextState) {

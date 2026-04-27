@@ -66,6 +66,7 @@ public class MatchController {
         return ResponseEntity.notFound().build();
     }
 
+    @Deprecated
     @PutMapping("/{id}/match-map")
     public ResponseEntity<Match> updateMatchMap(@PathVariable UUID id, @RequestParam GameMap gameMap){
         return matchService.updateMatchMap(id, gameMap)
@@ -74,8 +75,9 @@ public class MatchController {
     }
 
     @PutMapping("/{id}/match-state")
-    public ResponseEntity<Match> updateMatchState(@PathVariable UUID id, @RequestParam MatchState nextState) {
+    public ResponseEntity<MatchDTO> updateMatchState(@PathVariable UUID id, @RequestParam MatchState nextState) {
         return matchService.updateMatchState(id, nextState)
+                .map(MatchDTO::fromEntity)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

@@ -1,8 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.service;
 
-import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.MatchMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;

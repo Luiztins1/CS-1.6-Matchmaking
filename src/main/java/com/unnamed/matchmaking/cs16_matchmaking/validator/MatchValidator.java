@@ -42,7 +42,7 @@ public class MatchValidator {
 
         if(match.getMatchState().currentState(nextState)){
             match.setMatchState(nextState);
-            matchRepository.save(match);
+            return matchRepository.save(match);
         }
 
         throw new ChangeStateException("Transição de " + match.getMatchState() + " para " + nextState + " não é possível.");
