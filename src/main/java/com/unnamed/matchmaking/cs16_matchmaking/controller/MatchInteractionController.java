@@ -1,7 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchInteractionDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.MatchInteractionMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.service.MatchInteractionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

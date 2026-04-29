@@ -5,8 +5,13 @@ import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.LobbyMapper;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.PlayerMapper;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.LobbyRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.LobbyValidator;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.PlayerValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,41 +24,52 @@ import java.util.UUID;
 public class LobbyService {
 
     private final LobbyRepository lobbyRepository;
-    private final LobbyMapper lobbyMapper;
-
-    @Deprecated
-    @Transactional
-    public Lobby saveLobby(LobbyDTO lobbyDTO){
-        return lobbyRepository.save(lobbyMapper.createLobby(lobbyDTO));
-    }
+    private final MatchValidator matchValidator;
+    private final PlayerValidator playerValidator;
+    private final LobbyValidator lobbyValidator;
 
     public List<Lobby> findAllLobby(){
         return lobbyRepository.findAll();
     }
 
-    @Deprecated
     @Transactional
-    public Optional<Lobby> updateLobby(UUID id, LobbyDTO lobbyDTO){
-        return Optional.of(lobbyMapper.updateLobby(id, lobbyDTO));
+    public Optional<List<PlayerDTO>> addListLobbyPlayer(UUID matchId, UUID playerId){
+        Match match = matchValidator.validateSource(matchId);
+        Player player = playerValidator.validateSource(playerId);
+
+        Lobby lobby = match.getLobbyMatch();
+        List<Player> listLobbyPlayer = lobby.getListLobbyPlayer();
+
+        if(!listLobbyPlayer.contains(player)){
+            player.setLobby(lobby);
+            player.setMatch(match);
+            listLobbyPlayer.add(player);
+        }
+
+        List<PlayerDTO> playerDTOS = listLobbyPlayer
+                .stream()
+                .map(PlayerMapper::fromEntity)
+                .toList();
+
+        return Optional.of(playerDTOS);
     }
 
     @Transactional
-    public Optional<List<PlayerDTO>> updateListLobbyPlayer(UUID matchId, UUID playerId){
-        return Optional.of(lobbyMapper.updateListLobbyPlayer(matchId, playerId));
-    }
+    public void removeListLobbyPlayer(UUID matchId, UUID playerId){
+        Match match = matchValidator.validateSource(matchId);
+        Player player = playerValidator.validateSource(playerId);
 
-    @Deprecated
-    @Transactional
-    public void deleteLobby(UUID id){
-        lobbyRepository.delete(lobbyMapper.deleteLobby(id));
+        Lobby lobby = match.getLobbyMatch();
+        List<Player> listLobbyPlayer = lobby.getListLobbyPlayer();
+
+        listLobbyPlayer.remove(player);
+
+        player.setLobby(null);
+        player.setMatch(null);
+        lobby.setMatchLobby(match);
     }
 
     public Optional<Lobby> findByIdLobby(UUID id){
-        return Optional.of(lobbyMapper.findByIdLobby(id));
-    }
-
-    @Transactional
-    public void deleteListLobbyPlayer(UUID matchId, UUID playerId){
-        lobbyMapper.deleteListLobbyPlayer(matchId, playerId);
+        return Optional.of(lobbyValidator.validateSource(id));
     }
 }

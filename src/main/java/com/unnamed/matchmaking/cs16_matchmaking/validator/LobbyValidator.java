@@ -4,10 +4,12 @@ import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.LobbyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -19,6 +21,12 @@ public class LobbyValidator {
     public Lobby validateSource(UUID id){
         return lobbyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lobby não encontrado: " + id));
+    }
+
+    public List<Player> validateListLobby(UUID id){
+        Lobby lobby = lobbyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Lobby não encontrado: " + id));
+        return lobby.getListLobbyPlayer();
     }
 
     public Lobby validateIdForReturnNullMapper(PlayerDTO playerDTO){

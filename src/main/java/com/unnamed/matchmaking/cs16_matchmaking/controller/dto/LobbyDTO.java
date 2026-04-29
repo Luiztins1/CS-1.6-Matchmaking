@@ -24,16 +24,5 @@ public record LobbyDTO(
 
         @NotNull(message = "It's not null.")
         List<UUID> listLobbyPlayer) {
-        public static LobbyDTO fromEntity(Lobby lobby){
-                return new LobbyDTO(
-                        lobby.getId(),
-                        lobby.getName(),
-                        lobby.getMatchLobby().getId(),
-                        lobby.getTypeMatchEvent(),
-                        lobby.getListLobbyPlayer()
-                                .stream()
-                                .map(Player::getId)
-                                .toList()
-                );
-        }
+
 }

@@ -32,18 +32,4 @@ public record PlayerDTO(
 
         UUID matchId,
         UUID lobbyId) {
-
-        public static PlayerDTO fromEntity(Player player){
-                return new PlayerDTO(
-                        player.getId(),
-                        player.getNickname(),
-                        player.getRank(),
-                        player.getKills(),
-                        player.getDeaths(),
-                        player.getCountry(),
-                        player.getLastConnection(),
-                        player.getMatch() != null ? player.getMatch().getId() : null,
-                        player.getLobby() != null ? player.getLobby().getId() : null
-                );
-        }
 }

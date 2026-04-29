@@ -4,6 +4,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.LobbyMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.service.LobbyService;
 import jakarta.persistence.Lob;
 import jakarta.validation.Valid;
@@ -25,25 +26,11 @@ public class LobbyController {
 
     private final LobbyService lobbyService;
 
-    @Deprecated
-    @PostMapping
-    public ResponseEntity<LobbyDTO> save(@RequestBody @Valid LobbyDTO lobbyDTO){
-        Lobby lobby1 = lobbyService.saveLobby(lobbyDTO);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(lobby1.getId())
-                .toUri();
-
-        return ResponseEntity.created(location).body(LobbyDTO.fromEntity(lobby1));
-    }
-
     @GetMapping
     public ResponseEntity<List<LobbyDTO>> findAll(){
         List<LobbyDTO> lobbyList = lobbyService.findAllLobby()
                 .stream()
-                .map(LobbyDTO::fromEntity)
+                .map(LobbyMapper::fromEntity)
                 .toList();
 
         if(lobbyList.isEmpty()){
@@ -53,33 +40,14 @@ public class LobbyController {
         return ResponseEntity.ok(lobbyList);
     }
 
-    @Deprecated
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody  @Valid LobbyDTO lobbyDTO){
-        Optional<Lobby> lobbyOptional = lobbyService.updateLobby(id, lobbyDTO);
-
-        if(lobbyOptional.isPresent()){
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.notFound().build();
-    }
-
     @PutMapping("/{id}/list-player")
     public ResponseEntity<List<PlayerDTO>> updateListLobbyPlayer(
             @PathVariable UUID id,
             @RequestParam UUID matchId,
             @RequestParam UUID playerId){
-        return lobbyService.updateListLobbyPlayer(matchId, playerId)
+        return lobbyService.addListLobbyPlayer(matchId, playerId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    @Deprecated
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id){
-        lobbyService.deleteLobby(id);
-        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}/delete-list-player")
@@ -89,14 +57,14 @@ public class LobbyController {
             @RequestParam UUID playerId
             ){
 
-        lobbyService.deleteListLobbyPlayer(matchId, playerId);
+        lobbyService.removeListLobbyPlayer(matchId, playerId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LobbyDTO> findByid(@PathVariable UUID id){
         return lobbyService.findByIdLobby(id)
-                .map(LobbyDTO::fromEntity)
+                .map(LobbyMapper::fromEntity)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

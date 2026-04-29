@@ -5,6 +5,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ChangeStateException;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.MatchMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
@@ -38,14 +39,14 @@ public class MatchController {
                 .buildAndExpand(match1.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(MatchDTO.fromEntity(match1));
+        return ResponseEntity.created(location).body(MatchMapper.fromEntity(match1));
     }
 
     @GetMapping
     public ResponseEntity<List<MatchDTO>> findAll(){
         List<MatchDTO> matchList = matchService.findAllMatch()
                 .stream()
-                .map(MatchDTO::fromEntity)
+                .map(MatchMapper::fromEntity)
                 .toList();
 
         if(matchList.isEmpty()){
@@ -55,29 +56,10 @@ public class MatchController {
         return ResponseEntity.ok(matchList);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody @Valid MatchDTO matchDTO){
-        Optional<Match> matchOptional = matchService.updateMatch(id, matchDTO);
-
-        if(matchOptional.isPresent()){
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.notFound().build();
-    }
-
-    @Deprecated
-    @PutMapping("/{id}/match-map")
-    public ResponseEntity<Match> updateMatchMap(@PathVariable UUID id, @RequestParam GameMap gameMap){
-        return matchService.updateMatchMap(id, gameMap)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @PutMapping("/{id}/match-state")
     public ResponseEntity<MatchDTO> updateMatchState(@PathVariable UUID id, @RequestParam MatchState nextState) {
         return matchService.updateMatchState(id, nextState)
-                .map(MatchDTO::fromEntity)
+                .map(MatchMapper::fromEntity)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -91,7 +73,7 @@ public class MatchController {
     @GetMapping("/{id}")
     public ResponseEntity<MatchDTO> findById(@PathVariable UUID id){
          return matchService.findByIdMatch(id)
-                 .map(MatchDTO::fromEntity)
+                 .map(MatchMapper::fromEntity)
                  .map(ResponseEntity::ok)
                  .orElse(ResponseEntity.notFound().build());
     }

@@ -9,6 +9,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.InteractionEvent;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
+import com.unnamed.matchmaking.cs16_matchmaking.validator.LobbyValidator;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.PlayerValidator;
 import jakarta.transaction.Transactional;
@@ -23,83 +24,40 @@ import java.util.UUID;
 public class MatchMapper {
 
     private final MatchValidator matchValidator;
-    private final PlayerValidator playerValidator;
+    private final LobbyValidator lobbyValidator;
 
-    public Match createMatch(MatchDTO matchDTO){
-        List<Player> playerList = matchDTO.listPlayer() != null ? matchDTO.listPlayer()
-                .stream()
-                .map(playerValidator::validateSource)
-                .toList()
-                : List.of();
 
-        Match match = new Match(
-                null,
-                matchDTO.nameMatch(),
-                matchDTO.map(),
-                matchDTO.matchState(),
-                matchDTO.timeMatchMap(),
-                null,
-                playerList
+    public static MatchDTO fromEntity(Match match){
+        if(match == null) return null;
+
+        return new MatchDTO(
+                match.getId(),
+                match.getNameMatch(),
+                match.getMap(),
+                match.getMatchState(),
+                match.getTimeMatchMap(),
+                match.getLobbyMatch().getId(),
+                match.getListPlayer()
+                        .stream()
+                        .map(Player::getId)
+                        .toList()
         );
-
-        Lobby lobby = new Lobby(
-                null,
-                matchDTO.nameMatch(),
-                match,
-                playerList
-        );
-
-        match.setLobbyMatch(lobby);
-
-        playerList.forEach(player -> {
-            player.setMatch(match);
-            player.setLobby(lobby);
-        });
-
-        return match;
     }
 
-    @Deprecated
-    public Match updateMatch(UUID uuid, MatchDTO matchDTO){
-        Match match = matchValidator.validateSource(uuid);
+    public Match toDto(MatchDTO matchDTO){
+        if(matchDTO == null) return null;
 
-        List<Player> playerList = matchDTO.listPlayer() != null ?
-                matchDTO.listPlayer()
-                        .stream()
-                        .map(playerValidator::validateSource)
-                        .toList()
-                :List.of();
+        Match match = matchValidator.validateSource(matchDTO.id());
+        Lobby lobby = lobbyValidator.validateSource(matchDTO.lobbyId());
 
-        match.setNameMatch(matchDTO.nameMatch());
+        match.setId(matchDTO.id());
+        match.setNameMatch(match.getNameMatch());
         match.setMap(matchDTO.map());
         match.setMatchState(matchDTO.matchState());
         match.setTimeMatchMap(matchDTO.timeMatchMap());
-        match.setListPlayer(playerList);
+        match.setLobbyMatch(lobby);
+        match.setListPlayer(lobby.getListLobbyPlayer());
 
         return match;
-    }
-
-    public Match updateMatchMap(UUID id, GameMap gameMap){
-        return matchValidator.validateSource(id);
-    }
-
-    public Match updateMatchState(UUID id, MatchState nextState){
-        return matchValidator.validateState(id, nextState);
-    }
-
-    public Match deleteMatch(UUID id){
-        Match match = matchValidator.validateSource(id);
-
-        if(match.getListPlayer() != null){
-            match.getListPlayer().forEach(player -> {
-                player.setMatch(null);
-                player.setLobby(null);
-            });
-        }
-        return match;
-    }
-
-    public Match findByIdMatch(UUID id){
-        return matchValidator.validateSource(id);
     }
 }

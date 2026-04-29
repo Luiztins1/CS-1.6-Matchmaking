@@ -22,90 +22,36 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 @RequiredArgsConstructor
 public class LobbyMapper {
 
-    private final PlayerValidator playerValidator;
-    private final LobbyValidator lobbyValidator;
     private final MatchValidator matchValidator;
+    private final LobbyValidator lobbyValidator;
 
-    @Deprecated
-    public Lobby createLobby(LobbyDTO lobbyDTO){
-        List<Player> lobbyList = lobbyDTO.listLobbyPlayer() != null ?
-                lobbyDTO.listLobbyPlayer()
+    public static LobbyDTO fromEntity(Lobby lobby){
+        if(lobby == null) return null;
+
+
+        return new LobbyDTO(
+                lobby.getId(),
+                lobby.getName(),
+                lobby.getMatchLobby().getId(),
+                lobby.getTypeMatchEvent(),
+                lobby.getListLobbyPlayer()
                         .stream()
-                        .map(playerValidator::validateSource)
+                        .map(Player::getId)
                         .toList()
-                : List.of();
-
-        Lobby lobby = new Lobby(
-                null,
-                null,
-                null,
-                null
         );
-
-        lobbyList.forEach(player -> player.setLobby(lobby));
-
-        return  lobby;
     }
 
-    @Deprecated
-    public Lobby updateLobby(UUID id, LobbyDTO lobbyDTO){
-        Lobby lobby = lobbyValidator.validateSource(id);
+    public Lobby toDto(LobbyDTO lobbyDTO){
+       if(lobbyDTO == null) return null;
 
-        List<Player> playerList = lobbyDTO.listLobbyPlayer() != null ? lobbyDTO.listLobbyPlayer()
-                .stream()
-                .map(playerValidator::validateSource)
-                .toList()
-                :List.of();
+       Lobby lobby = new Lobby();
+       Match match = matchValidator.validateSource(lobbyDTO.id());
 
-        lobby.setId(lobbyDTO.id());
-        lobby.setListLobbyPlayer(playerList);
-
-        return lobby;
+       lobby.setId(lobbyDTO.id());
+       lobby.setName(lobbyDTO.name());
+       lobby.setMatchLobby(match);
+       lobby.setListLobbyPlayer(lobbyValidator.validateListLobby(match.getId()));
+       
+       return lobby;
     }
-
-
-    public List<PlayerDTO> updateListLobbyPlayer(UUID matchId, UUID playerId){
-        Match match = matchValidator.validateSource(matchId);
-        Player player = playerValidator.validateSource(playerId);
-
-        Lobby lobby = match.getLobbyMatch();
-        List<Player> listLobbyPlayer = lobby.getListLobbyPlayer();
-
-        if(!listLobbyPlayer.contains(player)){
-            player.setLobby(lobby);
-            player.setMatch(match);
-            listLobbyPlayer.add(player);
-        }
-
-        return listLobbyPlayer
-                .stream()
-                .map(PlayerDTO::fromEntity)
-                .toList();
-    }
-
-    public void deleteListLobbyPlayer(UUID matchId, UUID playerId){
-        Match match = matchValidator.validateSource(matchId);
-        Player player = playerValidator.validateSource(playerId);
-
-        Lobby lobby = match.getLobbyMatch();
-        List<Player> listLobbyPlayer = lobby.getListLobbyPlayer();
-
-        listLobbyPlayer.remove(player);
-
-        player.setLobby(null);
-        player.setMatch(null);
-        lobby.setMatchLobby(match);
-
-
-    }
-
-    @Deprecated
-    public Lobby deleteLobby(UUID id){
-        return lobbyValidator.validateSource(id);
-    }
-
-    public Lobby findByIdLobby(UUID id){
-        return lobbyValidator.validateSource(id);
-    }
-
 }

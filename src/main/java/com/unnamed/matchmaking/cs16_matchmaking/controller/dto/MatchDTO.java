@@ -33,18 +33,4 @@ public record MatchDTO(
         @NotNull(message = "It's not null.")
         List<UUID> listPlayer) {
 
-        public static MatchDTO fromEntity(Match match){
-                return new MatchDTO(
-                        match.getId(),
-                        match.getNameMatch(),
-                        match.getMap(),
-                        match.getMatchState(),
-                        match.getTimeMatchMap(),
-                        match.getLobbyMatch().getId(),
-                        match.getListPlayer()
-                                .stream()
-                                .map(Player::getId)
-                                .toList()
-                );
-        }
 }

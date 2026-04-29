@@ -3,6 +3,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.controller;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.ResponseErrorDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.DuplicateException;
+import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.PlayerMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.service.PlayerService;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.PlayerValidator;
@@ -35,14 +36,14 @@ public class PlayerController {
                 .path("/{id}")
                 .buildAndExpand(player1.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(PlayerDTO.fromEntity(player1));
+        return ResponseEntity.created(location).body(PlayerMapper.fromEntity(player1));
     }
 
     @GetMapping
     public ResponseEntity<List<PlayerDTO>> findAll(){
         List<PlayerDTO> playerList = playerService.findAllPlayer()
                 .stream()
-                .map(PlayerDTO::fromEntity)
+                .map(PlayerMapper::fromEntity)
                 .toList();
 
         if(playerList.isEmpty()){
@@ -69,7 +70,7 @@ public class PlayerController {
             @RequestParam(required = false) UUID lobbyId){
 
         return playerService.updateRelationships(id, matchId, lobbyId)
-                .map(PlayerDTO::fromEntity)
+                .map(PlayerMapper::fromEntity)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -83,7 +84,7 @@ public class PlayerController {
     @GetMapping("/{id}")
     public ResponseEntity<PlayerDTO> findById(@PathVariable UUID id){
         return playerService.findByIdPlayer(id)
-                .map(PlayerDTO::fromEntity)
+                .map(PlayerMapper::fromEntity)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
