@@ -1,7 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller.dto;
 
-import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
-import com.unnamed.matchmaking.cs16_matchmaking.model.enums.Rank;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.Ranking;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,7 +14,7 @@ public record PlayerDTO(
         String nickname,
 
         @NotNull(message = "It's not null.")
-        Rank rank,
+        Ranking rank,
 
         @NotNull(message = "It's not null.")
         Integer kills,

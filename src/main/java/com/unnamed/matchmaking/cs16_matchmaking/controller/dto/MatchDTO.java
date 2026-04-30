@@ -1,15 +1,11 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller.dto;
 
-import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 

@@ -1,16 +1,10 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller;
 
-import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ChangeStateException;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.MatchMapper;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
+import com.unnamed.matchmaking.cs16_matchmaking.model.mapper.MatchMapper;
+import com.unnamed.matchmaking.cs16_matchmaking.model.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.service.MatchService;
-import jakarta.persistence.Lob;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +13,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController

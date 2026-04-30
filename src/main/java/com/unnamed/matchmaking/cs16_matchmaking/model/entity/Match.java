@@ -1,4 +1,4 @@
-package com.unnamed.matchmaking.cs16_matchmaking.model;
+package com.unnamed.matchmaking.cs16_matchmaking.model.entity;
 
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;

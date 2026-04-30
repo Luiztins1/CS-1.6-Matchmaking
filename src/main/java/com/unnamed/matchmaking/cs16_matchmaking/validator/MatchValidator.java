@@ -1,20 +1,14 @@
 package com.unnamed.matchmaking.cs16_matchmaking.validator;
 
-import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.LobbyDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ChangeStateException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
-import com.unnamed.matchmaking.cs16_matchmaking.model.enums.InteractionEvent;
+import com.unnamed.matchmaking.cs16_matchmaking.model.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.MatchRepository;
-import com.unnamed.matchmaking.cs16_matchmaking.service.MatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.UUID;
 
 @Component

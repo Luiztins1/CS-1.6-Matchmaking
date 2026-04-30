@@ -1,6 +1,6 @@
-package com.unnamed.matchmaking.cs16_matchmaking.model;
+package com.unnamed.matchmaking.cs16_matchmaking.model.entity;
 
-import com.unnamed.matchmaking.cs16_matchmaking.model.enums.Rank;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.Ranking;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +27,7 @@ public class Player implements Serializable {
 
     @Column(name = "rank", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Rank rank;
+    private Ranking rank;
 
     @Column(name = "kills", nullable = false)
     private Integer kills;

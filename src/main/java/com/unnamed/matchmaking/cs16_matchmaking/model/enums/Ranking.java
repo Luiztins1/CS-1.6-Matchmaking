@@ -2,7 +2,7 @@ package com.unnamed.matchmaking.cs16_matchmaking.model.enums;
 
 import java.io.Serializable;
 
-public enum Rank implements Serializable {
+public enum Ranking implements Serializable {
     RECRUTA,
     SOLDADO,
     SOLDADO_2,

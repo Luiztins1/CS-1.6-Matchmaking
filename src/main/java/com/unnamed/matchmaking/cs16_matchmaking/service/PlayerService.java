@@ -1,10 +1,9 @@
 package com.unnamed.matchmaking.cs16_matchmaking.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.PlayerDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Lobby;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Mapper.PlayerMapper;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.model.entity.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.model.entity.Match;
+import com.unnamed.matchmaking.cs16_matchmaking.model.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.repository.PlayerRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.LobbyValidator;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;

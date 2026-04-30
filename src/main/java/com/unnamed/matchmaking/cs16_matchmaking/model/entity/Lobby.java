@@ -1,8 +1,7 @@
-package com.unnamed.matchmaking.cs16_matchmaking.model;
+package com.unnamed.matchmaking.cs16_matchmaking.model.entity;
 
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.TypeMatchEvent;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

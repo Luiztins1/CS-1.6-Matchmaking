@@ -1,8 +1,8 @@
 package com.unnamed.matchmaking.cs16_matchmaking.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchInteractionDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.model.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.model.entity.Match;
+import com.unnamed.matchmaking.cs16_matchmaking.model.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.TypeMatchEvent;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
