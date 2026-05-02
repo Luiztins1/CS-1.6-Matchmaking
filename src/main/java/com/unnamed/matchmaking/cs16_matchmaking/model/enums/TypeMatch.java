@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum TypeMatchEvent {
+public enum TypeMatch {
     DEFAULT(0),
     COMPETITIVE(10),
     DEATHMATCH(32);

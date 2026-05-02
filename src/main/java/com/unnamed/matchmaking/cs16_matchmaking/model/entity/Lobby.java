@@ -1,6 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.model.entity;
 
-import com.unnamed.matchmaking.cs16_matchmaking.model.enums.TypeMatchEvent;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.TypeMatch;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class Lobby implements Serializable {
         this.id = id;
         this.name = name;
         this.matchLobby = matchLobby;
-        typeMatchEvent = TypeMatchEvent.DEFAULT;
+        typeMatchEvent = TypeMatch.DEFAULT;
         this.listLobbyPlayer = listLobbyPlayer;
     }
 
@@ -37,7 +37,7 @@ public class Lobby implements Serializable {
 
     @Column(name = "type_match_event", nullable = false)
     @Enumerated(EnumType.STRING)
-    private TypeMatchEvent typeMatchEvent;
+    private TypeMatch typeMatchEvent;
 
     @OneToMany(mappedBy = "lobby", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Player> listLobbyPlayer;

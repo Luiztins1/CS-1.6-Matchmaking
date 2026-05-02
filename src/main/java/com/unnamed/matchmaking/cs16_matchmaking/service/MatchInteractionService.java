@@ -4,7 +4,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.controller.dto.MatchInteractionD
 import com.unnamed.matchmaking.cs16_matchmaking.model.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.model.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.MatchState;
-import com.unnamed.matchmaking.cs16_matchmaking.model.enums.TypeMatchEvent;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.TypeMatch;
 import com.unnamed.matchmaking.cs16_matchmaking.validator.MatchValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -66,14 +66,14 @@ public class MatchInteractionService {
             matchService.updateMatchState(match.getId(), MatchState.COLD);
         }
 
-        else if(playerSize.size() < TypeMatchEvent.COMPETITIVE.getValue()){
+        else if(playerSize.size() < TypeMatch.COMPETITIVE.getValue()){
             if(playerSize.size() > 1){
                 return;
             }
             matchService.updateMatchState(match.getId(), MatchState.WAITING);
         }
 
-        else if(playerSize.size() == TypeMatchEvent.COMPETITIVE.getValue()){
+        else if(playerSize.size() == TypeMatch.COMPETITIVE.getValue()){
             matchService.updateMatchState(match.getId(), MatchState.READY_MATCH);
         }
     }

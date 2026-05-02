@@ -1,6 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller.dto;
 
-import com.unnamed.matchmaking.cs16_matchmaking.model.enums.TypeMatchEvent;
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.TypeMatch;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,7 +17,7 @@ public record LobbyDTO(
         @NotNull(message = "It's not null.")
         UUID matchLobby,
 
-        TypeMatchEvent typeMatchEvent,
+        TypeMatch typeMatchEvent,
 
         @NotNull(message = "It's not null.")
         List<UUID> listLobbyPlayer) {

@@ -14,7 +14,7 @@ public record ResponseErrorDTO(
     }
 
     public static ResponseErrorDTO notFound(String messageError){
-        return new ResponseErrorDTO(HttpStatus.BAD_REQUEST, messageError, List.of());
+        return new ResponseErrorDTO(HttpStatus.NOT_FOUND, messageError, List.of());
     }
 
     public static ResponseErrorDTO changeState(String messageError){
