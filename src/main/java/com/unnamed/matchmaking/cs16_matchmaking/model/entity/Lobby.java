@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.model.entity;
 
+import com.unnamed.matchmaking.cs16_matchmaking.model.enums.Ranking;
 import com.unnamed.matchmaking.cs16_matchmaking.model.enums.TypeMatch;
 import jakarta.persistence.*;
 import lombok.Data;
