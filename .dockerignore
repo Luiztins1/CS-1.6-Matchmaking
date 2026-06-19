@@ -1,0 +1,17 @@
+target/
+.git
+.gitignore
+.m2
+*.iml
+.idea
+.vscode
+Dockerfile
+docker-compose*.yml
+README.md
+*.md
+*.log
+out/
+# keep mvnw and .mvn so the builder stage can use the wrapper
+.mvn/
+.mvn/wrapper/maven-wrapper.jar
+
