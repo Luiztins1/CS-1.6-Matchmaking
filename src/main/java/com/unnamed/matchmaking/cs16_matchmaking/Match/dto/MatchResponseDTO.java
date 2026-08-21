@@ -1,0 +1,32 @@
+package com.unnamed.matchmaking.cs16_matchmaking.Match.dto;
+
+import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
+import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+public record MatchResponseDTO(
+        UUID id,
+
+        @NotBlank(message = "It's not blank.")
+        String nameMatch,
+
+        @NotNull(message = "It's not null.")
+        GameMap map,
+
+        @NotNull(message = "It's not null.")
+        MatchState matchState,
+
+        @NotNull(message = "It's not null.")
+        Instant timeMatchMap,
+
+        UUID lobbyId,
+
+        @NotNull(message = "It's not null.")
+        List<UUID> listPlayer) {
+
+}
