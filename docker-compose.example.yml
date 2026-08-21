@@ -16,7 +16,7 @@ services:
   cs16matchmaking:
     image: postgres:16
     env_file:
-      - cred.env
+      - .env
     volumes:
       - ./Postgres:/var/lib/postgresql/data
     environment:

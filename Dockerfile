@@ -1,24 +1,35 @@
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
+# ==========================================
+# Estágio 1: Build (Compilação)
+# ==========================================
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 WORKDIR /workspace
 
-COPY pom.xml mvnw ./
-COPY .mvn .mvn
-COPY src ./src
-RUN ./mvnw -B -DskipTests package
-FROM eclipse-temurin:21-jre-jammy
+# 1. Otimização de Cache: Baixa as dependências ANTES do código fonte
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
 
-RUN groupadd --system app && useradd --system --gid app --create-home --home-dir /home/app --shell /usr/sbin/nologin app
+# 2. Copia o código e faz o build (só executa se o código fonte mudar)
+COPY src ./src
+RUN mvn -B -DskipTests clean package
+
+# ==========================================
+# Estágio 2: Runner (Execução)
+# ==========================================
+FROM eclipse-temurin:21-jre-alpine
+
+# 3. Segurança: Cria usuário não-root (sintaxe adaptada para Alpine)
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app
 
-COPY --from=builder /workspace/target/*.jar /app/app.jar
+# 4. Otimização de Camada: Copia e altera o dono no mesmo comando
+COPY --from=builder --chown=appuser:appgroup /workspace/target/*.jar /app/app.jar
 
-RUN chown app:app /app/app.jar
-
-USER app
-
+USER appuser
 EXPOSE 8080
 
+# 5. O JVM identifica essa variável automaticamente
 ENV JAVA_TOOL_OPTIONS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
 
-ENTRYPOINT ["sh", "-c", "exec java $JAVA_TOOL_OPTIONS -jar /app/app.jar"]
+# 6. Execução direta (PID 1) para Graceful Shutdown
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
