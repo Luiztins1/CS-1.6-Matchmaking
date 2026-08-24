@@ -4,9 +4,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.Ranking;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -14,9 +12,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "player")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Player implements Serializable {
 
     @Id

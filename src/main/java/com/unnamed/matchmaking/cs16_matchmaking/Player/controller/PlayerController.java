@@ -4,7 +4,6 @@ import com.unnamed.matchmaking.cs16_matchmaking.Player.dto.PlayerResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.mapper.PlayerMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.service.PlayerService;
-import com.unnamed.matchmaking.cs16_matchmaking.Player.validator.PlayerValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,6 @@ import java.util.UUID;
 public class PlayerController {
 
     private final PlayerService playerService;
-    private final PlayerValidator playerValidator;
 
     @PostMapping
     public ResponseEntity<PlayerResponseDTO> save(@RequestBody @Valid PlayerResponseDTO playerResponseDTO){
@@ -33,14 +31,14 @@ public class PlayerController {
                 .path("/{id}")
                 .buildAndExpand(player1.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(PlayerMapper.fromEntity(player1));
+        return ResponseEntity.created(location).body(PlayerMapper.toDto(player1));
     }
 
     @GetMapping
     public ResponseEntity<List<PlayerResponseDTO>> findAll(){
         List<PlayerResponseDTO> playerList = playerService.findAllPlayer()
                 .stream()
-                .map(PlayerMapper::fromEntity)
+                .map(PlayerMapper::toDto)
                 .toList();
 
         if(playerList.isEmpty()){
@@ -67,7 +65,7 @@ public class PlayerController {
             @RequestParam(required = false) UUID lobbyId){
 
         return playerService.updateRelationships(id, matchId, lobbyId)
-                .map(PlayerMapper::fromEntity)
+                .map(PlayerMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -81,7 +79,7 @@ public class PlayerController {
     @GetMapping("/{id}")
     public ResponseEntity<PlayerResponseDTO> findById(@PathVariable UUID id){
         return playerService.findByIdPlayer(id)
-                .map(PlayerMapper::fromEntity)
+                .map(PlayerMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

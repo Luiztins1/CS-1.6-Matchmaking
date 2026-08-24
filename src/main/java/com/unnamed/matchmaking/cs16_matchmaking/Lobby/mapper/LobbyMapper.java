@@ -16,9 +16,8 @@ public class LobbyMapper {
     private final MatchValidator matchValidator;
     private final LobbyValidator lobbyValidator;
 
-    public static LobbyResponseDTO fromEntity(Lobby lobby){
+    public static LobbyResponseDTO toDto(Lobby lobby){
         if(lobby == null) return null;
-
 
         return new LobbyResponseDTO(
                 lobby.getId(),
@@ -32,15 +31,18 @@ public class LobbyMapper {
         );
     }
 
-    public Lobby toDto(LobbyResponseDTO lobbyResponseDTO){
+    public Lobby toEntity(LobbyResponseDTO lobbyResponseDTO){
        if(lobbyResponseDTO == null) return null;
 
        Lobby lobby = new Lobby();
-       Match match = matchValidator.validateSource(lobbyResponseDTO.id());
+       Match match = new Match();
 
        lobby.setId(lobbyResponseDTO.id());
        lobby.setName(lobbyResponseDTO.name());
+
        lobby.setMatchLobby(match);
+       match.setLobbyMatch(lobby);
+
        lobby.setListLobbyPlayer(lobbyValidator.validateListLobby(match.getId()));
        
        return lobby;

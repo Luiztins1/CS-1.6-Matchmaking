@@ -5,9 +5,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -16,9 +14,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "match")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Match implements Serializable {
 
     @Id

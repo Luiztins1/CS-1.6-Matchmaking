@@ -13,11 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MatchMapper {
 
-    private final MatchValidator matchValidator;
-    private final LobbyValidator lobbyValidator;
-
-
-    public static MatchResponseDTO fromEntity(Match match){
+    public static MatchResponseDTO toDto(Match match){
         if(match == null) return null;
 
         return new MatchResponseDTO(
@@ -34,18 +30,21 @@ public class MatchMapper {
         );
     }
 
-    public Match toDto(MatchResponseDTO matchResponseDTO){
+    public static Match toEntity(MatchResponseDTO matchResponseDTO){
         if(matchResponseDTO == null) return null;
 
-        Match match = matchValidator.validateSource(matchResponseDTO.id());
-        Lobby lobby = lobbyValidator.validateSource(matchResponseDTO.lobbyId());
+        Match match = new Match();
+        Lobby lobby = new Lobby();
 
         match.setId(matchResponseDTO.id());
-        match.setNameMatch(match.getNameMatch());
+        match.setNameMatch(matchResponseDTO.nameMatch());
         match.setMap(matchResponseDTO.map());
         match.setMatchState(matchResponseDTO.matchState());
         match.setTimeMatchMap(matchResponseDTO.timeMatchMap());
+
         match.setLobbyMatch(lobby);
+        lobby.setMatchLobby(match);
+
         match.setListPlayer(lobby.getListLobbyPlayer());
 
         return match;

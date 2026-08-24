@@ -32,14 +32,14 @@ public class MatchController {
                 .buildAndExpand(match1.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(MatchMapper.fromEntity(match1));
+        return ResponseEntity.created(location).body(MatchMapper.toDto(match1));
     }
 
     @GetMapping
     public ResponseEntity<List<MatchResponseDTO>> findAll(){
         List<MatchResponseDTO> matchList = matchService.findAllMatch()
                 .stream()
-                .map(MatchMapper::fromEntity)
+                .map(MatchMapper::toDto)
                 .toList();
 
         if(matchList.isEmpty()){
@@ -52,7 +52,7 @@ public class MatchController {
     @PutMapping("/{id}/match-state")
     public ResponseEntity<MatchResponseDTO> updateMatchState(@PathVariable UUID id, @RequestParam MatchState nextState) {
         return matchService.updateMatchState(id, nextState)
-                .map(MatchMapper::fromEntity)
+                .map(MatchMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -66,7 +66,7 @@ public class MatchController {
     @GetMapping("/{id}")
     public ResponseEntity<MatchResponseDTO> findById(@PathVariable UUID id){
          return matchService.findByIdMatch(id)
-                 .map(MatchMapper::fromEntity)
+                 .map(MatchMapper::toDto)
                  .map(ResponseEntity::ok)
                  .orElse(ResponseEntity.notFound().build());
     }

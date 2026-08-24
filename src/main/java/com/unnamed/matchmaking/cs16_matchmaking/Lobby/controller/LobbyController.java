@@ -22,7 +22,7 @@ public class LobbyController {
     public ResponseEntity<List<LobbyResponseDTO>> findAll(){
         List<LobbyResponseDTO> lobbyList = lobbyService.findAllLobby()
                 .stream()
-                .map(LobbyMapper::fromEntity)
+                .map(LobbyMapper::toDto)
                 .toList();
 
         if(lobbyList.isEmpty()){
@@ -32,7 +32,7 @@ public class LobbyController {
         return ResponseEntity.ok(lobbyList);
     }
 
-    @PutMapping("/{id}/list-player")
+    /*@PutMapping("/{id}/list-player")
     public ResponseEntity<List<PlayerResponseDTO>> updateListLobbyPlayer(
             @PathVariable UUID id,
             @RequestParam UUID matchId,
@@ -40,7 +40,7 @@ public class LobbyController {
         return lobbyService.addListLobbyPlayer(matchId, playerId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-    }
+    }*/
 
     @DeleteMapping("/{id}/delete-list-player")
     public ResponseEntity<Void> deleteListLobbyPlayer(
@@ -56,7 +56,7 @@ public class LobbyController {
     @GetMapping("/{id}")
     public ResponseEntity<LobbyResponseDTO> findByid(@PathVariable UUID id){
         return lobbyService.findByIdLobby(id)
-                .map(LobbyMapper::fromEntity)
+                .map(LobbyMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

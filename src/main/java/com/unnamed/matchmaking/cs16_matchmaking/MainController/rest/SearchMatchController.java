@@ -24,7 +24,7 @@ public class SearchMatchController {
 
         List<MatchResponseDTO> matches = matchRepository.findByMapEquals(map)
                 .stream()
-                .map(MatchMapper::fromEntity)
+                .map(MatchMapper::toDto)
                 .toList();
         return matches.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(matches);
     }

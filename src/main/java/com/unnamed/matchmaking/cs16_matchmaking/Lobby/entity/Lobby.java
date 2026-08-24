@@ -4,8 +4,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.TypeMatch;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,8 +12,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "lobby")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Lobby implements Serializable {
 
     public Lobby(UUID id, String name, Match matchLobby, List<Player> listLobbyPlayer){

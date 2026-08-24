@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: cs16-matchmakingspring
+  datasource:
+    url: jdbc:h2:mem:cstTest
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+  show-sql: true
