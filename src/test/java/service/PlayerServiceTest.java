@@ -4,6 +4,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.repository.LobbyRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.repository.MatchRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.Player.dto.PlayerRequestDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.dto.PlayerResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.mapper.PlayerMapper;
@@ -12,10 +13,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.Player.service.PlayerService;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.Ranking;
-import com.unnamed.matchmaking.cs16_matchmaking.exceptions.DuplicateException;
-import com.unnamed.matchmaking.cs16_matchmaking.exceptions.LobbyNotFoundException;
-import com.unnamed.matchmaking.cs16_matchmaking.exceptions.MatchNotFoundException;
-import com.unnamed.matchmaking.cs16_matchmaking.exceptions.PlayerNotFoundException;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -80,14 +78,16 @@ public class PlayerServiceTest {
 
     @Test
     void shouldSavePlayer(){
-        when(playerRepository.existsByIdOrNickname(Mockito.eq(playerInit.getId()),
-                Mockito.eq(playerInit.getNickname()))).
+        PlayerRequestDTO request = createDefaultRequest();
+
+        when(playerRepository.existsByIdOrNickname(Mockito.eq(request.id()),
+                Mockito.eq(request.nickname()))).
                 thenReturn(false);
 
         when(playerRepository.save(Mockito.any(Player.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Player playerSaved = playerService.savePlayer(playerResponseDTO);
+       playerService.savePlayer(request);
 
         verify(playerRepository, times(1))
                 .save(playerArgumentCaptor.capture());
@@ -105,30 +105,49 @@ public class PlayerServiceTest {
         assertThat(playerCaptor.getLobby()).isNull();
 
         verify(playerRepository, times(1))
-                .existsByIdOrNickname(playerInit.getId(), playerInit.getNickname());
+                .existsByIdOrNickname(request.id(), request.nickname());
     }
 
     @Test
-    void shouldReturnPlayerNotFoundExceptionWhetherPlayerNotExist (){
+    void shouldReturnWhenDtoResourceNotFountExceptionSavePlayer (){
+        assertThrows(ResourceNotFoundException.class, () -> {
+            playerService.savePlayer(null);
+        }, "Dto não encontrado.");
+    }
+
+    @Test
+    void shouldReturnWhenPlayerNotFoundExceptionWhetherPlayerNotExist (){
         assertThrows(PlayerNotFoundException.class, () -> {
-            playerService.savePlayer(PlayerMapper.toDto(new Player()));
+
+            PlayerRequestDTO request = new PlayerRequestDTO(
+                   null,
+                    "Luiz",
+                    Ranking.BRONZE_1,
+                    0,
+                    0,
+                    "Brasil",
+                    null,
+                    null,
+                    null);
+
+            playerService.savePlayer(request);
         }, "Player não encontrado.");
     }
 
     @Test
     void shouldReturnDuplicateExceptionWhetherPlayerForDuplicate(){
+        PlayerRequestDTO request = createDefaultRequest();
+
         assertThrows(DuplicateException.class, () -> {
-            when(playerRepository.existsByIdOrNickname(Mockito.eq(playerInit.getId()), Mockito.eq(playerInit.getNickname())))
+            when(playerRepository.existsByIdOrNickname(Mockito.eq(request.id()), Mockito.eq(request.nickname())))
                     .thenReturn(true);
 
-            Player duplicatePlayer = playerInit;
-
-            playerService.savePlayer(PlayerMapper.toDto(duplicatePlayer));
+            playerService.savePlayer(request);
                 }, "Player duplicado.");
 
         verify(playerRepository, times(1))
-                .existsByIdOrNickname(Mockito.eq(playerInit.getId()),
-                        Mockito.eq(playerInit.getNickname()));
+                .existsByIdOrNickname(Mockito.eq(request.id()),
+                        Mockito.eq(request.nickname()));
     }
 
     @Test
@@ -376,5 +395,18 @@ public class PlayerServiceTest {
                 match,
                 playerList
         );
+    }
+
+    private PlayerRequestDTO createDefaultRequest(){
+        return new PlayerRequestDTO(
+                UUID.randomUUID(),
+                "Luiz",
+                Ranking.BRONZE_1,
+                0,
+                0,
+                "Brasil",
+                null,
+                null,
+                null);
     }
 }

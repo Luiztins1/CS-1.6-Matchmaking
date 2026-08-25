@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Player.controller;
 
+import com.unnamed.matchmaking.cs16_matchmaking.Player.dto.PlayerRequestDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.dto.PlayerResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.mapper.PlayerMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
@@ -23,8 +24,8 @@ public class PlayerController {
     private final PlayerService playerService;
 
     @PostMapping
-    public ResponseEntity<PlayerResponseDTO> save(@RequestBody @Valid PlayerResponseDTO playerResponseDTO){
-        Player player1 = playerService.savePlayer(playerResponseDTO);
+    public ResponseEntity<PlayerResponseDTO> save(@RequestBody @Valid PlayerRequestDTO playerRequestDTO){
+        Player player1 = playerService.savePlayer(playerRequestDTO);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

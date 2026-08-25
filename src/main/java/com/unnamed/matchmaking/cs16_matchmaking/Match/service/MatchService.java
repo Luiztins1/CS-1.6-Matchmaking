@@ -24,7 +24,6 @@ public class MatchService {
 
     private final MatchRepository matchRepository;
     private final PlayerRepository playerRepository;
-    private final MatchValidator matchValidator;
 
     @Transactional
     public Match saveMatch(MatchResponseDTO matchResponseDTO) {
