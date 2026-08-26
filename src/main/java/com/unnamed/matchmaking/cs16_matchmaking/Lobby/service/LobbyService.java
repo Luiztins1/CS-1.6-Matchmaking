@@ -5,8 +5,6 @@ import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.repository.LobbyRepository;
-import com.unnamed.matchmaking.cs16_matchmaking.Lobby.validator.LobbyValidator;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.validator.MatchValidator;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.repository.PlayerRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.LobbyNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.MatchNotFoundException;
@@ -26,8 +24,6 @@ public class LobbyService {
     private final LobbyRepository lobbyRepository;
     private final MatchRepository matchRepository;
     private final PlayerRepository playerRepository;
-    private final MatchValidator matchValidator;
-    private final LobbyValidator lobbyValidator;
 
     public List<Lobby> findAllLobby(){
         return lobbyRepository.findAll();

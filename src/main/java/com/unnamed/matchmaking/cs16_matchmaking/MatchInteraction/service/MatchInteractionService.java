@@ -7,7 +7,6 @@ import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.TypeMatch;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.validator.MatchValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,10 +19,9 @@ import java.util.UUID;
 public class MatchInteractionService {
 
     private final LobbyService lobbyService;
-    private final MatchValidator matchValidator;
     private final MatchService matchService;
 
-    @Transactional
+   /* @Transactional
     public synchronized boolean handlerMatchInteraction(MatchInteractionResponseDTO matchInteractionResponseDTO){
         boolean success =  switch (matchInteractionResponseDTO.event()){
             case ENTER -> enterInMatch(matchInteractionResponseDTO.matchId(), matchInteractionResponseDTO.playerId());
@@ -78,7 +76,7 @@ public class MatchInteractionService {
         else if(playerSize.size() == TypeMatch.COMPETITIVE.getValue()){
             matchService.updateMatchState(match.getId(), MatchState.READY_MATCH);
         }
-    }
+    }*/
 
 
 }

@@ -157,7 +157,6 @@ public class MatchControllerTest {
                 null,
                 MatchState.COLD,
                 Instant.now(),
-                null,
                 null
         );
     }
@@ -168,8 +167,7 @@ public class MatchControllerTest {
                 GameMap.DE_DUST_2,
                 MatchState.COLD,
                 Instant.now(),
-                null,
-                playerList
+                null
         );
     }
 
@@ -183,36 +181,24 @@ public class MatchControllerTest {
     }
 
     private MatchRequestDTO createDefaultRequestDto(Match match){
-        List<UUID> playersId = match.getListPlayer()
-                .stream()
-                .map(Player::getId)
-                .toList();
-
         return new MatchRequestDTO(
                 match.getId(),
                 match.getNameMatch(),
                 match.getMap(),
                 match.getMatchState(),
                 match.getTimeMatchMap(),
-                match.getLobbyMatch().getId(),
-                playersId
+                match.getLobbyMatch().getId()
         );
     }
 
     private MatchResponseDTO createDefaultResponseDto(Match match){
-        List<UUID> playersId = match.getListPlayer()
-                .stream()
-                .map(Player::getId)
-                .toList();
-
         return new MatchResponseDTO(
                 match.getId(),
                 match.getNameMatch(),
                 match.getMap(),
                 match.getMatchState(),
                 match.getTimeMatchMap(),
-                null,
-                playersId
+                null
         );
     }
 }

@@ -1,20 +1,18 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Match.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchRequestDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchResponseDTO;
+
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.repository.PlayerRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.repository.MatchRepository;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.validator.MatchValidator;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.MatchNotFoundException;
-import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,34 +26,23 @@ public class MatchService {
 
     @Transactional
     public Match saveMatch(MatchRequestDTO matchRequestDTO) {
-        List<Player> playerList = playerRepository.findAll();
-
-        if(playerList.isEmpty())
-            throw new ResourceNotFoundException("Lista de players vazia.");
-
         Match match = new Match(
                 matchRequestDTO.id(),
                 matchRequestDTO.nameMatch(),
                 matchRequestDTO.map(),
                 matchRequestDTO.matchState(),
                 matchRequestDTO.timeMatchMap(),
-                null,
-                playerList
+                null
         );
 
         Lobby lobby = new Lobby(
                 UUID.randomUUID(),
                 matchRequestDTO.nameMatch(),
                 match,
-                playerList
+                new ArrayList<>()
         );
 
         match.setLobbyMatch(lobby);
-
-        playerList.forEach(player -> {
-            player.setMatch(match);
-            player.setLobby(lobby);
-        });
 
         return matchRepository.save(match);
     }
@@ -80,12 +67,6 @@ public class MatchService {
         Match match = findByIdMatch(id)
                 .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
 
-        if (match.getListPlayer() != null) {
-            match.getListPlayer().forEach(player -> {
-                player.setMatch(null);
-                player.setLobby(null);
-            });
-        }
         matchRepository.delete(match);
     }
 

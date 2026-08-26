@@ -86,7 +86,6 @@ public class MatchRepositoryTest {
         assertThat(foundMatch.getMatchState()).isEqualTo(MatchState.COLD);
         assertThat(foundMatch.getTimeMatchMap()).isInstanceOf(Instant.class);
         assertThat(foundMatch.getTimeMatchMap()).isNotNull();
-        assertThat(foundMatch.getListPlayer()).isEmpty();
 
         assertThat(foundLobby.getTypeMatchEvent()).isInstanceOf(TypeMatch.class);
         assertThat(foundLobby.getTypeMatchEvent()).isEqualTo(TypeMatch.DEFAULT);
@@ -180,8 +179,7 @@ public class MatchRepositoryTest {
                 GameMap.DE_DUST_2,
                 MatchState.COLD,
                 Instant.now(),
-                null,
-                playerList
+                null
         );
     }
 

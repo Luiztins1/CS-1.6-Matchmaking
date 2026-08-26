@@ -13,7 +13,6 @@ import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.Ranking;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.MatchNotFoundException;
-import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,36 +40,22 @@ public class MatchServiceTest {
     @Mock
     MatchRepository matchRepository;
 
-    @Mock
-    PlayerRepository playerRepository;
-
     MatchResponseDTO matchResponseDTO;
     Match matchInit;
 
     Lobby lobby;
-
-    Player player;
-
-    List<Player> playerList;
 
     @Captor
     private ArgumentCaptor<Match> matchArgumentCaptor;
 
     @BeforeEach
     void setUp(){
-        playerList = new ArrayList<>();
-        player = createDefaultPlayer();
 
-        playerList.add(player);
-
-        matchInit = createDefaultMatch(playerList);
-        lobby = createDefaultLobby(matchInit, playerList);
+        matchInit = createDefaultMatch();
+        lobby = createDefaultLobby(matchInit, new ArrayList<>());
 
         matchInit.setLobbyMatch(lobby);
         lobby.setMatchLobby(matchInit);
-
-        player.setMatch(matchInit);
-        player.setLobby(lobby);
 
         matchResponseDTO = MatchMapper.toDto(matchInit);
     }
@@ -80,9 +65,6 @@ public class MatchServiceTest {
         MatchRequestDTO requestDTO = createDefaultRequestDto(matchInit);
         when(matchRepository.save(Mockito.any(Match.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
-
-        when(playerRepository.findAll())
-                .thenReturn(List.of(player));
 
         Match matchUpdated = matchService.saveMatch(requestDTO);
 
@@ -94,27 +76,9 @@ public class MatchServiceTest {
         assertThat(matchCaptor).isNotNull();
         assertThat(matchCaptor.getId()).isEqualTo(matchInit.getId());
 
-        assertThat(player.getMatch()).isEqualTo(matchCaptor);
-        assertThat(player.getLobby()).isEqualTo(matchCaptor.getLobbyMatch());
-
         verify(matchRepository, times(1))
                 .save(matchCaptor);
 
-        verify(playerRepository, times(1))
-                .findAll();
-    }
-
-    @Test
-    void shouldReturnResourceNotFoundExceptionMatch(){
-        when(playerRepository.findAll())
-                .thenReturn(List.of());
-
-        assertThrows(ResourceNotFoundException.class, () ->{
-            matchService.saveMatch(createDefaultRequestDto(matchInit));
-        }, "Lista de players vazia.");
-
-        verify(playerRepository, times(1))
-                .findAll();
     }
 
     @Test
@@ -179,20 +143,6 @@ public class MatchServiceTest {
     void shouldDeleteMatch(){
         Match match = matchInit;
 
-        Player player = new Player(
-                UUID.randomUUID(),
-                "Luiz",
-                Ranking.BRONZE_1,
-                0,
-                0,
-                "Brasil",
-                null,
-                match,
-                match.getLobbyMatch()
-        );
-
-        match.setListPlayer(List.of(player));
-
         when(matchRepository.findById(Mockito.eq(match.getId())))
                 .thenReturn(Optional.of(match));
 
@@ -201,46 +151,11 @@ public class MatchServiceTest {
 
         matchService.deleteMatch(match.getId());
 
-        assertThat(player.getMatch()).isNull();
-        assertThat(player.getLobby()).isNull();
-
         verify(matchRepository, times(1))
                 .findById(match.getId());
 
         verify(matchRepository, times(1))
                 .delete(match);
-    }
-
-
-    @Test
-    void shouldDeleteMatchInEachPlayer(){
-        when(matchRepository.findById(Mockito.eq(matchInit.getId())))
-                .thenReturn(Optional.of(matchInit));
-
-        Player player1 = new Player(
-                UUID.randomUUID(), "Luiz", Ranking.BRONZE_1,0, 0, "Brasil", null, matchInit, matchInit.getLobbyMatch());
-
-        Player player2 = new Player(
-                UUID.randomUUID(), "Luasdz", Ranking.BRONZE_2, 0, 0, "Brasil", null, matchInit, matchInit.getLobbyMatch());
-
-        matchInit.setListPlayer(List.of(player1, player2));
-
-        doNothing().when(matchRepository)
-                .delete(matchInit);
-
-        matchService.deleteMatch(matchInit.getId());
-
-        assertThat(player1.getMatch()).isNull();
-        assertThat(player1.getLobby()).isNull();
-
-        assertThat(player2.getMatch()).isNull();
-        assertThat(player2.getLobby()).isNull();
-
-        verify(matchRepository, times(1))
-                .findById(matchInit.getId());
-
-        verify(matchRepository, times(1))
-                .delete(matchInit);
     }
 
     @Test
@@ -285,15 +200,14 @@ public class MatchServiceTest {
         );
     }
 
-    private Match createDefaultMatch(List<Player> playerList){
+    private Match createDefaultMatch(){
         return new Match(
                 UUID.randomUUID(),
                 "Test",
                 GameMap.DE_DUST_2,
                 MatchState.COLD,
                 Instant.now(),
-                null,
-                playerList
+                null
         );
     }
 
@@ -307,19 +221,13 @@ public class MatchServiceTest {
     }
 
     private MatchRequestDTO createDefaultRequestDto(Match match){
-        List<UUID> playersId = match.getListPlayer()
-                .stream()
-                .map(Player::getId)
-                .toList();
-
         return new MatchRequestDTO(
                 match.getId(),
                 match.getNameMatch(),
                 match.getMap(),
                 match.getMatchState(),
                 match.getTimeMatchMap(),
-                null,
-                playersId
+                null
         );
     }
 }

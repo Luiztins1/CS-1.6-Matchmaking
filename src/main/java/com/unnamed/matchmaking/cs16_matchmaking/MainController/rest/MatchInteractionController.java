@@ -16,9 +16,9 @@ public class MatchInteractionController {
 
     private final MatchInteractionService matchInteractionService;
 
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<Boolean> handlerMatchInteraction(@RequestBody MatchInteractionResponseDTO matchInteractionResponseDTO){
         boolean success = matchInteractionService.handlerMatchInteraction(matchInteractionResponseDTO);
         return ResponseEntity.ok(success);
-    }
+    }*/
 }

@@ -43,7 +43,4 @@ public class Match implements Serializable {
     @OneToOne(mappedBy = "matchLobby", cascade = CascadeType.ALL)
     private Lobby lobbyMatch;
 
-    @OneToMany(mappedBy = "match", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Player> listPlayer;
-
 }

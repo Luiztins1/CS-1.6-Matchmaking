@@ -24,8 +24,5 @@ public record MatchRequestDTO(
         @NotNull(message = "It's not null.")
         Instant timeMatchMap,
 
-        UUID lobbyId,
-
-        @NotNull(message = "It's not null.")
-        List<UUID> listPlayer) {
+        UUID lobbyId) {
 }

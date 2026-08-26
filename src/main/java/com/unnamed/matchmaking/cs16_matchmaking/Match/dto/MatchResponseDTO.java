@@ -15,7 +15,6 @@ public record MatchResponseDTO(
         GameMap map,
         MatchState matchState,
         Instant timeMatchMap,
-        UUID lobbyId,
-        List<UUID> listPlayer) {
+        UUID lobbyId) {
 
 }

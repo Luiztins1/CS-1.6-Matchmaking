@@ -135,8 +135,7 @@ public class LobbyControllerTest {
                 GameMap.DE_DUST_2,
                 MatchState.COLD,
                 Instant.now(),
-                null,
-                playerList
+                null
         );
     }
 

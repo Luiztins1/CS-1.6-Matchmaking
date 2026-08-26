@@ -4,9 +4,6 @@ import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchRequestDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
-import com.unnamed.matchmaking.cs16_matchmaking.Lobby.validator.LobbyValidator;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.validator.MatchValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,11 +20,7 @@ public class MatchMapper {
                 match.getMap(),
                 match.getMatchState(),
                 match.getTimeMatchMap(),
-                match.getLobbyMatch().getId(),
-                match.getListPlayer()
-                        .stream()
-                        .map(Player::getId)
-                        .toList()
+                match.getLobbyMatch().getId()
         );
     }
 
@@ -45,8 +38,6 @@ public class MatchMapper {
 
         match.setLobbyMatch(lobby);
         lobby.setMatchLobby(match);
-
-        match.setListPlayer(lobby.getListLobbyPlayer());
 
         return match;
     }
