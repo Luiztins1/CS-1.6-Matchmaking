@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Match.service;
 
+import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchRequestDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
@@ -26,25 +27,25 @@ public class MatchService {
     private final PlayerRepository playerRepository;
 
     @Transactional
-    public Match saveMatch(MatchResponseDTO matchResponseDTO) {
+    public Match saveMatch(MatchRequestDTO matchRequestDTO) {
         List<Player> playerList = playerRepository.findAll();
 
         if(playerList.isEmpty())
             throw new ResourceNotFoundException("Lista de players vazia.");
 
         Match match = new Match(
-                matchResponseDTO.id(),
-                matchResponseDTO.nameMatch(),
-                matchResponseDTO.map(),
-                matchResponseDTO.matchState(),
-                matchResponseDTO.timeMatchMap(),
+                matchRequestDTO.id(),
+                matchRequestDTO.nameMatch(),
+                matchRequestDTO.map(),
+                matchRequestDTO.matchState(),
+                matchRequestDTO.timeMatchMap(),
                 null,
                 playerList
         );
 
         Lobby lobby = new Lobby(
                 UUID.randomUUID(),
-                matchResponseDTO.nameMatch(),
+                matchRequestDTO.nameMatch(),
                 match,
                 playerList
         );

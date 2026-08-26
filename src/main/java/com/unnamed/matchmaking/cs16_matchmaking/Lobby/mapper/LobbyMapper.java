@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Lobby.mapper;
 
+import com.unnamed.matchmaking.cs16_matchmaking.Lobby.dto.LobbyRequestDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.dto.LobbyResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
@@ -9,12 +10,11 @@ import com.unnamed.matchmaking.cs16_matchmaking.Match.validator.MatchValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class LobbyMapper {
-
-    private final MatchValidator matchValidator;
-    private final LobbyValidator lobbyValidator;
 
     public static LobbyResponseDTO toDto(Lobby lobby){
         if(lobby == null) return null;
@@ -29,22 +29,5 @@ public class LobbyMapper {
                         .map(Player::getId)
                         .toList()
         );
-    }
-
-    public Lobby toEntity(LobbyResponseDTO lobbyResponseDTO){
-       if(lobbyResponseDTO == null) return null;
-
-       Lobby lobby = new Lobby();
-       Match match = new Match();
-
-       lobby.setId(lobbyResponseDTO.id());
-       lobby.setName(lobbyResponseDTO.name());
-
-       lobby.setMatchLobby(match);
-       match.setLobbyMatch(lobby);
-
-       lobby.setListLobbyPlayer(lobbyValidator.validateListLobby(match.getId()));
-       
-       return lobby;
     }
 }

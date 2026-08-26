@@ -1,6 +1,7 @@
 package service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchRequestDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.mapper.MatchMapper;
@@ -76,13 +77,14 @@ public class MatchServiceTest {
 
     @Test
     void shouldSaveMatch(){
+        MatchRequestDTO requestDTO = createDefaultRequestDto(matchInit);
         when(matchRepository.save(Mockito.any(Match.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         when(playerRepository.findAll())
                 .thenReturn(List.of(player));
 
-        Match matchUpdated = matchService.saveMatch(matchResponseDTO);
+        Match matchUpdated = matchService.saveMatch(requestDTO);
 
         verify(matchRepository, times(1))
                 .save(matchArgumentCaptor.capture());
@@ -108,7 +110,7 @@ public class MatchServiceTest {
                 .thenReturn(List.of());
 
         assertThrows(ResourceNotFoundException.class, () ->{
-            matchService.saveMatch(matchResponseDTO);
+            matchService.saveMatch(createDefaultRequestDto(matchInit));
         }, "Lista de players vazia.");
 
         verify(playerRepository, times(1))
@@ -301,6 +303,23 @@ public class MatchServiceTest {
                 "Test",
                 match,
                 playerList
+        );
+    }
+
+    private MatchRequestDTO createDefaultRequestDto(Match match){
+        List<UUID> playersId = match.getListPlayer()
+                .stream()
+                .map(Player::getId)
+                .toList();
+
+        return new MatchRequestDTO(
+                match.getId(),
+                match.getNameMatch(),
+                match.getMap(),
+                match.getMatchState(),
+                match.getTimeMatchMap(),
+                null,
+                playersId
         );
     }
 }

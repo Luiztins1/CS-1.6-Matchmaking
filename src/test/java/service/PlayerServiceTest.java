@@ -78,7 +78,7 @@ public class PlayerServiceTest {
 
     @Test
     void shouldSavePlayer(){
-        PlayerRequestDTO request = createDefaultRequest();
+        PlayerRequestDTO request = createDefaultRequest(playerInit);
 
         when(playerRepository.existsByIdOrNickname(Mockito.eq(request.id()),
                 Mockito.eq(request.nickname()))).
@@ -136,12 +136,12 @@ public class PlayerServiceTest {
 
     @Test
     void shouldReturnDuplicateExceptionWhetherPlayerForDuplicate(){
-        PlayerRequestDTO request = createDefaultRequest();
+        PlayerRequestDTO request = createDefaultRequest(playerInit);
+
+        when(playerRepository.existsByIdOrNickname(Mockito.eq(request.id()), Mockito.eq(request.nickname())))
+                .thenReturn(true);
 
         assertThrows(DuplicateException.class, () -> {
-            when(playerRepository.existsByIdOrNickname(Mockito.eq(request.id()), Mockito.eq(request.nickname())))
-                    .thenReturn(true);
-
             playerService.savePlayer(request);
                 }, "Player duplicado.");
 
@@ -213,7 +213,7 @@ public class PlayerServiceTest {
         when(playerRepository.save(Mockito.any(Player.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        PlayerResponseDTO dto = new PlayerResponseDTO(
+        PlayerRequestDTO dto = new PlayerRequestDTO(
                 playerInit.getId(),
                 "Update",
                 Ranking.BRONZE_2,
@@ -245,7 +245,7 @@ public class PlayerServiceTest {
     @Test
     void shouldReturnPlayerNotFoundExceptionUpdate(){
         assertThrows(PlayerNotFoundException.class, () ->{
-           playerService.updatePlayer(UUID.randomUUID(), PlayerMapper.toDto(playerInit));
+           playerService.updatePlayer(UUID.randomUUID(), createDefaultRequest(new Player()));
         }, "Player não encontrado.");
     }
 
@@ -397,14 +397,14 @@ public class PlayerServiceTest {
         );
     }
 
-    private PlayerRequestDTO createDefaultRequest(){
+    private PlayerRequestDTO createDefaultRequest(Player player){
         return new PlayerRequestDTO(
-                UUID.randomUUID(),
-                "Luiz",
-                Ranking.BRONZE_1,
-                0,
-                0,
-                "Brasil",
+                player.getId(),
+                player.getNickname(),
+                player.getRank(),
+                player.getKills(),
+                player.getDeaths(),
+                player.getCountry(),
                 null,
                 null,
                 null);

@@ -9,13 +9,23 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public record MatchResponseDTO(
+public record MatchRequestDTO(
         UUID id,
-        String nameMatch,
-        GameMap map,
-        MatchState matchState,
-        Instant timeMatchMap,
-        UUID lobbyId,
-        List<UUID> listPlayer) {
 
+        @NotBlank(message = "It's not blank.")
+        String nameMatch,
+
+        @NotNull(message = "It's not null.")
+        GameMap map,
+
+        @NotNull(message = "It's not null.")
+        MatchState matchState,
+
+        @NotNull(message = "It's not null.")
+        Instant timeMatchMap,
+
+        UUID lobbyId,
+
+        @NotNull(message = "It's not null.")
+        List<UUID> listPlayer) {
 }

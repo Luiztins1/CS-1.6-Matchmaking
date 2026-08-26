@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Match.controller;
 
+import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchRequestDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.mapper.MatchMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
@@ -16,15 +17,15 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/matches")
+@RequestMapping("/api/v1/matches")
 @RequiredArgsConstructor
 public class MatchController {
 
     private final MatchService matchService;
 
     @PostMapping
-    public ResponseEntity<MatchResponseDTO> save(@RequestBody @Valid MatchResponseDTO matchResponseDTO){
-        Match match1 = matchService.saveMatch(matchResponseDTO);
+    public ResponseEntity<MatchResponseDTO> save(@RequestBody @Valid MatchRequestDTO matchRequestDTO){
+        Match match1 = matchService.saveMatch(matchRequestDTO);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -57,7 +58,7 @@ public class MatchController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> delete(@PathVariable UUID id){
         matchService.deleteMatch(id);
         return ResponseEntity.noContent().build();

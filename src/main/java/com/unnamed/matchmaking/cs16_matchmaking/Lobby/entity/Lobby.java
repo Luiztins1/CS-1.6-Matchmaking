@@ -1,12 +1,15 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity;
 
+import com.unnamed.matchmaking.cs16_matchmaking.Lobby.dto.LobbyResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.TypeMatch;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

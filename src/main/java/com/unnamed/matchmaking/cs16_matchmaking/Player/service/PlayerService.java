@@ -38,7 +38,7 @@ public class PlayerService {
             throw new PlayerNotFoundException("Player não encontrado.");
 
         if(playerRepository.existsByIdOrNickname(player.getId(), player.getNickname()))
-            throw new DuplicateException("Player duplicado.");
+            throw new DuplicateException("Player já cadastrado.");
 
         return playerRepository.save(player);
     }
@@ -55,21 +55,21 @@ public class PlayerService {
     }
 
     @Transactional
-    public Optional<Player> updatePlayer(UUID id, PlayerResponseDTO playerResponseDTO){
+    public Optional<Player> updatePlayer(UUID id, PlayerRequestDTO playerRequestDTO){
 
-        if(playerResponseDTO == null)
+        if(playerRequestDTO == null)
             throw new ResourceNotFoundException("Dto está vazio.");
 
-        Player player = playerRepository.findById(playerResponseDTO.id())
+        Player player = playerRepository.findById(id)
                 .orElseThrow(() -> new PlayerNotFoundException("Player não encontrado."));
 
 
-        player.setNickname(playerResponseDTO.nickname());
-        player.setRank(playerResponseDTO.rank());
-        player.setKills(playerResponseDTO.kills());
-        player.setDeaths(playerResponseDTO.deaths());
-        player.setCountry(playerResponseDTO.country());
-        player.setLastConnection(playerResponseDTO.lastConnection());
+        player.setNickname(playerRequestDTO.nickname());
+        player.setRank(playerRequestDTO.rank());
+        player.setKills(playerRequestDTO.kills());
+        player.setDeaths(playerRequestDTO.deaths());
+        player.setCountry(playerRequestDTO.country());
+        player.setLastConnection(playerRequestDTO.lastConnection());
 
         player.setMatch(null);
         player.setLobby(null);

@@ -12,7 +12,6 @@ public record PlayerRequestDTO(
         UUID id,
 
         @NotBlank(message = "It's not blank.")
-        @Size(min = 4, max = 20, message = "About Me must be between 4 and 20 characters")
         String nickname,
 
         @NotNull(message = "It's not null.")
@@ -25,10 +24,8 @@ public record PlayerRequestDTO(
         Integer deaths,
 
         @NotBlank(message = "It's not blank.")
-        @Size(min = 0, max = 30, message = "About Me must be between 0 and 20 characters")
         String country,
 
-        @NotNull(message = "It's not null.")
         Instant lastConnection,
 
         UUID matchId,

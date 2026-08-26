@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/players")
+@RequestMapping("/api/v1/players")
 @RequiredArgsConstructor
 public class PlayerController {
 
@@ -25,14 +25,15 @@ public class PlayerController {
 
     @PostMapping
     public ResponseEntity<PlayerResponseDTO> save(@RequestBody @Valid PlayerRequestDTO playerRequestDTO){
-        Player player1 = playerService.savePlayer(playerRequestDTO);
+        Player savedPlayer = playerService.savePlayer(playerRequestDTO);
+        PlayerResponseDTO response = PlayerMapper.toDto(savedPlayer);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(player1.getId())
+                .buildAndExpand(savedPlayer.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(PlayerMapper.toDto(player1));
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping
@@ -49,16 +50,14 @@ public class PlayerController {
         return ResponseEntity.ok(playerList);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody @Valid PlayerResponseDTO playerResponseDTO){
-        Optional<Player> playerOptional = playerService.updatePlayer(id, playerResponseDTO);
-
-        if(playerOptional.isPresent()){
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.notFound().build();
+    @PutMapping("/{id}/update")
+    public ResponseEntity<PlayerResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid PlayerRequestDTO playerRequestDTO){
+        return playerService.updatePlayer(id, playerRequestDTO)
+                .map(PlayerMapper::toDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
+
     @PutMapping("/{id}/update-relationships")
     public ResponseEntity<PlayerResponseDTO> updateRelationships(
             @PathVariable UUID id,
@@ -71,7 +70,7 @@ public class PlayerController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> delete(@PathVariable UUID id){
         playerService.deletePlayer(id);
         return ResponseEntity.noContent().build();
