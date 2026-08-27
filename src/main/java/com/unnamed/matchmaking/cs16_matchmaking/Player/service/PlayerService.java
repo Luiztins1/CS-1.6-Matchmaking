@@ -1,13 +1,15 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Player.service;
 
+import com.unnamed.matchmaking.cs16_matchmaking.Lobby.repository.LobbyRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.Match.repository.MatchRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.Player.dto.PlayerRequestDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.dto.PlayerResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.Player.mapper.PlayerMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.repository.PlayerRepository;
-import com.unnamed.matchmaking.cs16_matchmaking.Lobby.validator.LobbyValidator;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.validator.MatchValidator;
-import com.unnamed.matchmaking.cs16_matchmaking.Player.validator.PlayerValidator;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,27 +23,23 @@ import java.util.UUID;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
-    private final PlayerValidator playerValidator;
-    private final MatchValidator matchValidator;
-    private final LobbyValidator lobbyValidator;
+    private final MatchRepository matchRepository;
+    private final LobbyRepository lobbyRepository;
+
 
     @Transactional
-    public Player savePlayer(PlayerResponseDTO playerResponseDTO) {
-        Match match = matchValidator.validateIdForReturnNullMapper(playerResponseDTO);
-        Lobby lobby = lobbyValidator.validateIdForReturnNullMapper(playerResponseDTO);
+    public Player savePlayer(PlayerRequestDTO playerRequestDTO) {
+        if(playerRequestDTO == null)
+            throw new ResourceNotFoundException("Dto está vazio.");
 
-        Player player = new Player(
-                null,
-                playerResponseDTO.nickname(),
-                playerResponseDTO.rank(),
-                playerResponseDTO.kills(),
-                playerResponseDTO.deaths(),
-                playerResponseDTO.country(),
-                playerResponseDTO.lastConnection(),
-                match,
-                lobby
-        );
-        playerValidator.validateDuplicate(player);
+        Player player = PlayerMapper.toEntity(playerRequestDTO);
+
+        if(player.getId() == null)
+            throw new PlayerNotFoundException("Player não encontrado.");
+
+        if(playerRepository.existsByIdOrNickname(player.getId(), player.getNickname()))
+            throw new DuplicateException("Player já cadastrado.");
+
         return playerRepository.save(player);
     }
 
@@ -50,47 +48,56 @@ public class PlayerService {
     }
 
     @Transactional
-    public void deletePlayer(UUID id){
-        playerRepository.delete(playerValidator.validateSource(id));
+    public void deletePlayer(UUID id) {
+        var player = playerRepository.findById(id)
+                .orElseThrow(() -> new PlayerNotFoundException("Player não encontrado."));
+        playerRepository.delete(player);
     }
 
     @Transactional
-    public Optional<Player> updatePlayer(UUID id, PlayerResponseDTO playerResponseDTO){
-        Player player = playerValidator.validateSource(id);
+    public Optional<Player> updatePlayer(UUID id, PlayerRequestDTO playerRequestDTO){
 
-        Match match = matchValidator.validateIdForReturnNullMapper(playerResponseDTO);
-        Lobby lobby = lobbyValidator.validateIdForReturnNullMapper(playerResponseDTO);
+        if(playerRequestDTO == null)
+            throw new ResourceNotFoundException("Dto está vazio.");
 
-        player.setNickname(playerResponseDTO.nickname());
-        player.setRank(playerResponseDTO.rank());
-        player.setKills(playerResponseDTO.kills());
-        player.setDeaths(playerResponseDTO.deaths());
-        player.setCountry(playerResponseDTO.country());
-        player.setLastConnection(playerResponseDTO.lastConnection());
-        player.setMatch(match);
-        player.setLobby(lobby);
+        Player player = playerRepository.findById(id)
+                .orElseThrow(() -> new PlayerNotFoundException("Player não encontrado."));
+
+
+        player.setNickname(playerRequestDTO.nickname());
+        player.setRank(playerRequestDTO.rank());
+        player.setKills(playerRequestDTO.kills());
+        player.setDeaths(playerRequestDTO.deaths());
+        player.setCountry(playerRequestDTO.country());
+        player.setLastConnection(playerRequestDTO.lastConnection());
+
+        player.setMatch(null);
+        player.setLobby(null);
 
         return Optional.of(playerRepository.save(player));
     }
 
     @Transactional
     public Optional<Player> updateRelationships(UUID id, UUID matchId, UUID lobbyId){
-        Player player = playerValidator.validateSource(id);
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new MatchNotFoundException("Partida não encontrado."));
 
-        if(matchId != null){
-            Match match = matchValidator.validateSource(matchId);
-            player.setMatch(match);
-        }
+        Lobby lobby = lobbyRepository.findById(lobbyId)
+                .orElseThrow(() -> new LobbyNotFoundException("Lobby não encontrado."));
 
-        if(lobbyId != null){
-            Lobby lobby = lobbyValidator.validateSource(lobbyId);
-            player.setLobby(lobby);
-        }
+        Player player = playerRepository.findById(id)
+                .orElseThrow(() -> new PlayerNotFoundException("Player não encontrado."));
+
+        player.setMatch(match);
+        player.setLobby(lobby);
 
         return Optional.of(playerRepository.save(player));
     }
 
     public Optional<Player> findByIdPlayer(UUID id){
-        return Optional.of(playerValidator.validateSource(id));
+        Player player = playerRepository.findById(id)
+                .orElseThrow(() -> new PlayerNotFoundException("Player não encontrado."));
+
+        return Optional.of(player);
     }
 }

@@ -1,11 +1,9 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Match.mapper;
 
+import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchRequestDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
-import com.unnamed.matchmaking.cs16_matchmaking.Lobby.validator.LobbyValidator;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.validator.MatchValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MatchMapper {
 
-    private final MatchValidator matchValidator;
-    private final LobbyValidator lobbyValidator;
-
-
-    public static MatchResponseDTO fromEntity(Match match){
+    public static MatchResponseDTO toDto(Match match){
         if(match == null) return null;
 
         return new MatchResponseDTO(
@@ -25,28 +19,27 @@ public class MatchMapper {
                 match.getNameMatch(),
                 match.getMap(),
                 match.getMatchState(),
+                match.getTypeMatch(),
                 match.getTimeMatchMap(),
-                match.getLobbyMatch().getId(),
-                match.getListPlayer()
-                        .stream()
-                        .map(Player::getId)
-                        .toList()
+                match.getLobbyMatch().getId()
         );
     }
 
-    public Match toDto(MatchResponseDTO matchResponseDTO){
-        if(matchResponseDTO == null) return null;
+    public static Match toEntity(MatchRequestDTO matchRequestDTO){
+        if(matchRequestDTO == null) return null;
 
-        Match match = matchValidator.validateSource(matchResponseDTO.id());
-        Lobby lobby = lobbyValidator.validateSource(matchResponseDTO.lobbyId());
+        Match match = new Match();
+        Lobby lobby = new Lobby();
 
-        match.setId(matchResponseDTO.id());
-        match.setNameMatch(match.getNameMatch());
-        match.setMap(matchResponseDTO.map());
-        match.setMatchState(matchResponseDTO.matchState());
-        match.setTimeMatchMap(matchResponseDTO.timeMatchMap());
+        match.setId(matchRequestDTO.id());
+        match.setNameMatch(matchRequestDTO.nameMatch());
+        match.setMap(matchRequestDTO.map());
+        match.setMatchState(matchRequestDTO.matchState());
+        match.setTypeMatch(matchRequestDTO.typeMatch());
+        match.setTimeMatchMap(matchRequestDTO.timeMatchMap());
+
         match.setLobbyMatch(lobby);
-        match.setListPlayer(lobby.getListLobbyPlayer());
+        lobby.setMatchLobby(match);
 
         return match;
     }

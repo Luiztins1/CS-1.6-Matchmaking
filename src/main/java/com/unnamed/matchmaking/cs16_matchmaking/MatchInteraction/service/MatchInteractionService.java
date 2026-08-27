@@ -1,18 +1,22 @@
 package com.unnamed.matchmaking.cs16_matchmaking.MatchInteraction.service;
 
+import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.service.LobbyService;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.service.MatchService;
-import com.unnamed.matchmaking.cs16_matchmaking.MatchInteraction.dto.MatchInteractionResponseDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.MatchInteraction.dto.MatchInteractionRequestDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.Player.service.PlayerService;
+import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.TypeMatch;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.validator.MatchValidator;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.MatchNotFoundException;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.PlayerNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,19 +24,26 @@ import java.util.UUID;
 public class MatchInteractionService {
 
     private final LobbyService lobbyService;
-    private final MatchValidator matchValidator;
     private final MatchService matchService;
+    private final PlayerService playerService;
 
     @Transactional
-    public synchronized boolean handlerMatchInteraction(MatchInteractionResponseDTO matchInteractionResponseDTO){
-        boolean success =  switch (matchInteractionResponseDTO.event()){
-            case ENTER -> enterInMatch(matchInteractionResponseDTO.matchId(), matchInteractionResponseDTO.playerId());
-            case EXIT -> exitMatch(matchInteractionResponseDTO.matchId(), matchInteractionResponseDTO.playerId());
+    public boolean handlerMatchInteraction(MatchInteractionRequestDTO matchInteractionRequestDTO){
+        Match match = matchService.findByIdMatch(matchInteractionRequestDTO.matchId())
+                .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
+
+        if(match.getMatchState() == MatchState.READY_MATCH){
+            return false;
+        }
+
+        boolean success =  switch (matchInteractionRequestDTO.event()){
+            case ENTER -> enterInMatch(matchInteractionRequestDTO.matchId(), matchInteractionRequestDTO.playerId());
+            case EXIT -> exitMatch(matchInteractionRequestDTO.matchId(), matchInteractionRequestDTO.playerId());
             default -> false;
         };
 
         if(success){
-            this.enterMatchState(matchInteractionResponseDTO.matchId());
+            this.updateMatchStateBasedOnLobbySize(match);
         }
 
         return success;
@@ -40,45 +51,45 @@ public class MatchInteractionService {
 
     @Transactional
     public boolean enterInMatch(UUID matchId, UUID playerId){
-        Match match = matchValidator.validateSource(matchId);
-        if(match.getMatchState() == MatchState.READY_MATCH){
-            return false;
+        Optional<Match> match = matchService.findByIdMatch(matchId);
+        Optional<Player> player = playerService.findByIdPlayer(playerId);
+
+        if(match.isPresent() && player.isPresent()){
+            lobbyService.addListLobbyPlayer(matchId, playerId);
+            return true;
         }
 
-        lobbyService.addListLobbyPlayer(matchId, playerId);
-        return true;
+        return false;
     }
 
     @Transactional
     public boolean exitMatch(UUID matchId, UUID playerId){
-        Match match = matchValidator.validateSource(matchId);
-        if(match.getMatchState() == MatchState.READY_MATCH){
-            return false;
+        Optional<Match> match = matchService.findByIdMatch(matchId);
+        Optional<Player> player = playerService.findByIdPlayer(playerId);
+
+        if(match.isPresent() && player.isPresent()){
+            lobbyService.removeListLobbyPlayer(matchId, playerId);
+            return true;
         }
-        lobbyService.removeListLobbyPlayer(matchId, playerId);
-        return true;
+        return false;
     }
 
-    @Transactional
-    public void enterMatchState(UUID matchId){
-        Match match = matchValidator.validateSource(matchId);
-        List<Player> playerSize = match.getLobbyMatch().getListLobbyPlayer();
+    public void updateMatchStateBasedOnLobbySize(Match match){
+        int currentPlayer = match.getLobbyMatch().getListLobbyPlayer().size();
+        int maxPlayer = match.getTypeMatch().getValue();
 
-        if(playerSize.isEmpty()){
-            matchService.updateMatchState(match.getId(), MatchState.COLD);
+        MatchState nowState;
+
+        if(currentPlayer == 0){
+            nowState = MatchState.COLD;
+        } else if(currentPlayer < maxPlayer){
+            nowState = MatchState.WAITING;
+        }else {
+            nowState = MatchState.READY_MATCH;
         }
 
-        else if(playerSize.size() < TypeMatch.COMPETITIVE.getValue()){
-            if(playerSize.size() > 1){
-                return;
-            }
-            matchService.updateMatchState(match.getId(), MatchState.WAITING);
-        }
+        if(match.getMatchState() != nowState)
+            matchService.updateMatchState(match.getId(), nowState);
 
-        else if(playerSize.size() == TypeMatch.COMPETITIVE.getValue()){
-            matchService.updateMatchState(match.getId(), MatchState.READY_MATCH);
-        }
     }
-
-
 }

@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Match.controller;
 
+import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchRequestDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.mapper.MatchMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
@@ -13,18 +14,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/matches")
+@RequestMapping("/api/v1/matches")
 @RequiredArgsConstructor
 public class MatchController {
 
     private final MatchService matchService;
 
     @PostMapping
-    public ResponseEntity<MatchResponseDTO> save(@RequestBody @Valid MatchResponseDTO matchResponseDTO){
-        Match match1 = matchService.saveMatch(matchResponseDTO);
+    public ResponseEntity<MatchResponseDTO> save(@RequestBody @Valid MatchRequestDTO matchRequestDTO){
+        Match match1 = matchService.saveMatch(matchRequestDTO);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -32,14 +34,14 @@ public class MatchController {
                 .buildAndExpand(match1.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(MatchMapper.fromEntity(match1));
+        return ResponseEntity.created(location).body(MatchMapper.toDto(match1));
     }
 
     @GetMapping
     public ResponseEntity<List<MatchResponseDTO>> findAll(){
         List<MatchResponseDTO> matchList = matchService.findAllMatch()
                 .stream()
-                .map(MatchMapper::fromEntity)
+                .map(MatchMapper::toDto)
                 .toList();
 
         if(matchList.isEmpty()){
@@ -52,12 +54,12 @@ public class MatchController {
     @PutMapping("/{id}/match-state")
     public ResponseEntity<MatchResponseDTO> updateMatchState(@PathVariable UUID id, @RequestParam MatchState nextState) {
         return matchService.updateMatchState(id, nextState)
-                .map(MatchMapper::fromEntity)
+                .map(MatchMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> delete(@PathVariable UUID id){
         matchService.deleteMatch(id);
         return ResponseEntity.noContent().build();
@@ -66,7 +68,7 @@ public class MatchController {
     @GetMapping("/{id}")
     public ResponseEntity<MatchResponseDTO> findById(@PathVariable UUID id){
          return matchService.findByIdMatch(id)
-                 .map(MatchMapper::fromEntity)
+                 .map(MatchMapper::toDto)
                  .map(ResponseEntity::ok)
                  .orElse(ResponseEntity.notFound().build());
     }
