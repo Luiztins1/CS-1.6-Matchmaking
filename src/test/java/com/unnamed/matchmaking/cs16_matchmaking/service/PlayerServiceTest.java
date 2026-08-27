@@ -1,4 +1,4 @@
-package service;
+package com.unnamed.matchmaking.cs16_matchmaking.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.repository.LobbyRepository;
@@ -241,6 +241,13 @@ public class PlayerServiceTest {
 
        verify(playerRepository, times(1))
                .findById(playerInit.getId());
+    }
+
+    @Test
+    void shouldReturnResourceNotFoundExceptionUpdate(){
+        assertThrows(ResourceNotFoundException.class, () ->{
+            playerService.updatePlayer(UUID.randomUUID(), null);
+        },"Dto está vazio.");
     }
 
     @Test

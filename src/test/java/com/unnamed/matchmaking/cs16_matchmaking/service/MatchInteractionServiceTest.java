@@ -1,4 +1,4 @@
-package service;
+package com.unnamed.matchmaking.cs16_matchmaking.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.service.LobbyService;
@@ -229,7 +229,7 @@ public class MatchInteractionServiceTest {
         when(playerService.findByIdPlayer(Mockito.eq(playerInit.getId())))
                 .thenReturn(Optional.of(playerInit));
 
-        boolean result = matchInteractionService.enterInMatch(UUID.randomUUID(), playerInit.getId());
+        boolean result = matchInteractionService.exitMatch(UUID.randomUUID(), playerInit.getId());
 
         assertThat(result).isFalse();
 
@@ -242,7 +242,7 @@ public class MatchInteractionServiceTest {
         when(matchService.findByIdMatch(Mockito.eq(matchInit.getId())))
                 .thenReturn(Optional.of(matchInit));
 
-        boolean result = matchInteractionService.enterInMatch(matchInit.getId(), UUID.randomUUID());
+        boolean result = matchInteractionService.exitMatch(matchInit.getId(), UUID.randomUUID());
 
         assertThat(result).isFalse();
 

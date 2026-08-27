@@ -54,7 +54,7 @@ public class MatchService {
 
     @Transactional
     public Optional<Match> updateMatchState(UUID id, MatchState nextState) {
-        Match match = findByIdMatch(id)
+        Match match = matchRepository.findById(id)
                 .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
 
         match.setMatchState(nextState);
@@ -65,7 +65,7 @@ public class MatchService {
 
     @Transactional
     public void deleteMatch(UUID id) {
-        Match match = findByIdMatch(id)
+        Match match = matchRepository.findById(id)
                 .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
 
         matchRepository.delete(match);

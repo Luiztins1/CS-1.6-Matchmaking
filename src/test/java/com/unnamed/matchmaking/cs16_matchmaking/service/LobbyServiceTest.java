@@ -1,4 +1,4 @@
-package service;
+package com.unnamed.matchmaking.cs16_matchmaking.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.dto.LobbyResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
@@ -78,7 +78,7 @@ public class LobbyServiceTest {
 
         playerList.add(player);
 
-        match = createDefaultMatch(playerList);
+        match = createDefaultMatch();
         lobbyInit = createDefaultLobby(match, playerList);
 
         match.setLobbyMatch(lobbyInit);
@@ -149,7 +149,71 @@ public class LobbyServiceTest {
         verify(matchRepository, times(1))
                 .findById(match.getId());
 
+    }
 
+    @Test
+    void shouldAddListLobbyPlayerNotContainsPlayers(){
+        Match match = createDefaultMatch();
+        Lobby lobby = createDefaultLobby(match, new ArrayList<>());
+
+        match.setLobbyMatch(lobby);
+
+        Player player = createDefaultPlayer();
+
+
+        when(playerRepository.findById(Mockito.eq(player.getId())))
+                .thenReturn(Optional.of(player));
+
+        when(matchRepository.findById(Mockito.eq(match.getId())))
+                .thenReturn(Optional.of(match));
+
+        when(lobbyRepository.save(Mockito.any(Lobby.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Lobby lobbyAddListLobbyPlayer = lobbyService.addListLobbyPlayer(match.getId(), player.getId());
+
+        verify(lobbyRepository, times(1))
+                .save(lobbyArgumentCaptor.capture());
+
+        Lobby lobbyCapture = lobbyArgumentCaptor.getValue();
+
+        assertThat(lobbyCapture.getListLobbyPlayer()).contains(player);
+        assertThat(player.getLobby()).isEqualTo(lobby);
+        assertThat(player.getMatch()).isEqualTo(match);
+
+        verify(playerRepository, times(1))
+                .findById(player.getId());
+
+        verify(matchRepository, times(1))
+                .findById(match.getId());
+
+
+    }
+
+    @Test
+    void shouldReturnMatchNotFoundException(){
+        UUID randomId = UUID.randomUUID();
+        when(matchRepository.findById(Mockito.eq(randomId)))
+                .thenReturn(Optional.empty());
+
+        assertThrows(MatchNotFoundException.class, () ->{
+            lobbyService.addListLobbyPlayer(randomId, UUID.randomUUID());
+        }, "Match não encontrado.");
+    }
+
+    @Test
+    void shouldReturnPlayerNotFoundException(){
+        UUID playerId = UUID.randomUUID();
+
+        when(matchRepository.findById(Mockito.eq(match.getId())))
+                .thenReturn(Optional.of(match));
+
+        when(playerRepository.findById(Mockito.eq(playerId)))
+                .thenReturn(Optional.empty());
+
+        assertThrows(PlayerNotFoundException.class, () ->{
+            lobbyService.addListLobbyPlayer(match.getId(), playerId);
+        }, "Match não encontrado.");
     }
 
     @Test
@@ -245,7 +309,7 @@ public class LobbyServiceTest {
     }
 
 
-    private Match createDefaultMatch(List<Player> playerList){
+    private Match createDefaultMatch(){
         return new Match(
                 UUID.randomUUID(),
                 "Test",

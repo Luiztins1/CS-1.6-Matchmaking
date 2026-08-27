@@ -1,4 +1,4 @@
-package service;
+package com.unnamed.matchmaking.cs16_matchmaking.service;
 
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchRequestDTO;
@@ -75,6 +75,8 @@ public class MatchServiceTest {
 
         assertThat(matchCaptor).isNotNull();
         assertThat(matchCaptor.getId()).isEqualTo(matchInit.getId());
+        assertThat(matchUpdated.getLobbyMatch()).isNotNull();
+        assertThat(matchUpdated.getLobbyMatch().getMatchLobby()).isEqualTo(matchUpdated);
 
         verify(matchRepository, times(1))
                 .save(matchCaptor);
@@ -116,9 +118,7 @@ public class MatchServiceTest {
         when(matchRepository.save(Mockito.any(Match.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Match matchUpdated = matchService.updateMatchState(matchInit.getId(), MatchState.WAITING)
-                .orElseThrow(() -> new RuntimeException("Update error."));
-
+        Optional<Match> matchUpdated = matchService.updateMatchState(matchInit.getId(), MatchState.WAITING);
         verify(matchRepository, times(1))
                 .save(matchArgumentCaptor.capture());
 
@@ -130,14 +130,21 @@ public class MatchServiceTest {
 
         verify(matchRepository, times(1))
                 .findById(matchInit.getId());
+
+        verify(matchRepository, times(1))
+                .save(matchInit);
     }
 
     @Test
-    void shouldReturnMatchNotFoundExceptionMatch(){
+    void shouldReturnMatchNotFoundExceptionMatchUpdate(){
+        when(matchRepository.findById(Mockito.eq(matchInit.getId())))
+                .thenReturn(Optional.empty());
+
         assertThrows(MatchNotFoundException.class, () -> {
             matchService.updateMatchState(matchInit.getId(), MatchState.WAITING);
         }, "Match não encontrado.");
     }
+
 
     @Test
     void shouldDeleteMatch(){
@@ -149,6 +156,7 @@ public class MatchServiceTest {
         doNothing().when(matchRepository)
                 .delete(match);
 
+
         matchService.deleteMatch(match.getId());
 
         verify(matchRepository, times(1))
@@ -159,7 +167,10 @@ public class MatchServiceTest {
     }
 
     @Test
-    void shouldReturnMatchNotFoundExceptionDeleteMatch(){
+    void shouldReturnMatchNotFoundExceptionDeleteMatch() {
+        when(matchRepository.findById(Mockito.eq(matchInit.getId())))
+                .thenReturn(Optional.empty());
+
         assertThrows(MatchNotFoundException.class, () -> {
             matchService.deleteMatch(matchInit.getId());
         }, "Match não encontrado.");

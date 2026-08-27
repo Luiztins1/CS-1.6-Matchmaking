@@ -106,6 +106,10 @@
 					<excludes>
 						<exclude>**/model/**</exclude>
 						<exclude>**/entity/**</exclude>
+						<exclude>**/dto/**</exclude>
+						<exclude>**/mapper/**</exclude>
+						<exclude>**/common/**</exclude>
+						<exclude>**/exceptions/**</exclude>
 					</excludes>
 				</configuration>
 
