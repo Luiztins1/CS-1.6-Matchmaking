@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Player.entity;
 
+import com.unnamed.matchmaking.cs16_matchmaking.Auditable.Auditable;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.Ranking;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Player implements Serializable {
+public class Player extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

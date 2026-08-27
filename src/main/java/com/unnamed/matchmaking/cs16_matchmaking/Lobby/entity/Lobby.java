@@ -1,5 +1,6 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity;
 
+import com.unnamed.matchmaking.cs16_matchmaking.Auditable.Auditable;
 import com.unnamed.matchmaking.cs16_matchmaking.Lobby.dto.LobbyResponseDTO;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Lobby implements Serializable {
+public class Lobby extends Auditable implements Serializable {
 
     public Lobby(UUID id, String name, Match matchLobby, List<Player> listLobbyPlayer){
         this.id = id;
