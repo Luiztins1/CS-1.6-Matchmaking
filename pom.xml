@@ -110,6 +110,7 @@
 						<exclude>**/mapper/**</exclude>
 						<exclude>**/common/**</exclude>
 						<exclude>**/exceptions/**</exclude>
+						<exclude>**/Cs16MatchmakingApplication.class/**</exclude>
 					</excludes>
 				</configuration>
 
