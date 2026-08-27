@@ -10,6 +10,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.Match.service.MatchService;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
+import com.unnamed.matchmaking.cs16_matchmaking.enums.TypeMatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -156,6 +157,7 @@ public class MatchControllerTest {
                 " ",
                 null,
                 MatchState.COLD,
+                TypeMatch.DEFAULT,
                 Instant.now(),
                 null
         );
@@ -166,6 +168,7 @@ public class MatchControllerTest {
                 "Test",
                 GameMap.DE_DUST_2,
                 MatchState.COLD,
+                TypeMatch.DEFAULT,
                 Instant.now(),
                 null
         );
@@ -186,6 +189,7 @@ public class MatchControllerTest {
                 match.getNameMatch(),
                 match.getMap(),
                 match.getMatchState(),
+                match.getTypeMatch(),
                 match.getTimeMatchMap(),
                 match.getLobbyMatch().getId()
         );
@@ -197,6 +201,7 @@ public class MatchControllerTest {
                 match.getNameMatch(),
                 match.getMap(),
                 match.getMatchState(),
+                match.getTypeMatch(),
                 match.getTimeMatchMap(),
                 null
         );

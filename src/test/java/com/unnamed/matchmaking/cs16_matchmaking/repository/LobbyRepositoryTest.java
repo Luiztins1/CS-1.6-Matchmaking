@@ -119,6 +119,7 @@ public class LobbyRepositoryTest {
                 "Test",
                 GameMap.DE_DUST_2,
                 MatchState.COLD,
+                TypeMatch.DEFAULT,
                 Instant.now(),
                 null
         );

@@ -4,6 +4,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
+import com.unnamed.matchmaking.cs16_matchmaking.enums.TypeMatch;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,10 @@ public class Match implements Serializable {
     @Column(name = "match_state", nullable = false)
     @Enumerated(EnumType.STRING)
     private MatchState matchState;
+
+    @Column(name = "type_match", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TypeMatch typeMatch;
 
     @Column(name = "time_match_map", nullable = false)
     private Instant timeMatchMap;

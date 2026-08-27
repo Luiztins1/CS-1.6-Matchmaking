@@ -19,6 +19,7 @@ public class MatchMapper {
                 match.getNameMatch(),
                 match.getMap(),
                 match.getMatchState(),
+                match.getTypeMatch(),
                 match.getTimeMatchMap(),
                 match.getLobbyMatch().getId()
         );
@@ -34,6 +35,7 @@ public class MatchMapper {
         match.setNameMatch(matchRequestDTO.nameMatch());
         match.setMap(matchRequestDTO.map());
         match.setMatchState(matchRequestDTO.matchState());
+        match.setTypeMatch(matchRequestDTO.typeMatch());
         match.setTimeMatchMap(matchRequestDTO.timeMatchMap());
 
         match.setLobbyMatch(lobby);

@@ -8,10 +8,10 @@ import com.unnamed.matchmaking.cs16_matchmaking.Match.mapper.MatchMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.repository.MatchRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.Match.service.MatchService;
 import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
-import com.unnamed.matchmaking.cs16_matchmaking.Player.repository.PlayerRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.Ranking;
+import com.unnamed.matchmaking.cs16_matchmaking.enums.TypeMatch;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.MatchNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -206,6 +206,7 @@ public class MatchServiceTest {
                 "Test",
                 GameMap.DE_DUST_2,
                 MatchState.COLD,
+                TypeMatch.DEFAULT,
                 Instant.now(),
                 null
         );
@@ -226,6 +227,7 @@ public class MatchServiceTest {
                 match.getNameMatch(),
                 match.getMap(),
                 match.getMatchState(),
+                match.getTypeMatch(),
                 match.getTimeMatchMap(),
                 null
         );

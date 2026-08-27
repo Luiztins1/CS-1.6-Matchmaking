@@ -12,6 +12,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.Player.repository.PlayerReposito
 import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.Ranking;
+import com.unnamed.matchmaking.cs16_matchmaking.enums.TypeMatch;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.LobbyNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.MatchNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.PlayerNotFoundException;
@@ -250,6 +251,7 @@ public class LobbyServiceTest {
                 "Test",
                 GameMap.DE_DUST_2,
                 MatchState.COLD,
+                TypeMatch.DEFAULT,
                 Instant.now(),
                 null
         );

@@ -31,6 +31,7 @@ public class MatchService {
                 matchRequestDTO.nameMatch(),
                 matchRequestDTO.map(),
                 matchRequestDTO.matchState(),
+                matchRequestDTO.typeMatch(),
                 matchRequestDTO.timeMatchMap(),
                 null
         );

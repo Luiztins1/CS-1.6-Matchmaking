@@ -11,6 +11,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.Player.service.PlayerService;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.Ranking;
+import com.unnamed.matchmaking.cs16_matchmaking.enums.TypeMatch;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.DuplicateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -252,6 +253,7 @@ public class PlayerControllerTest {
                 "Test",
                 GameMap.DE_DUST_2,
                 MatchState.COLD,
+                TypeMatch.DEFAULT,
                 Instant.now(),
                 null
         );
