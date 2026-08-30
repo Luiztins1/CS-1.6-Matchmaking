@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 @RequiredArgsConstructor
 @Getter
 public class CustomAuthentication implements Authentication {
@@ -22,6 +21,8 @@ public class CustomAuthentication implements Authentication {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if(this.userAuth.getRoles() == null) return List.of();
+
         return this.userAuth.getRoles()
                 .stream()
                 .map(SimpleGrantedAuthority::new)
@@ -51,21 +52,6 @@ public class CustomAuthentication implements Authentication {
     @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
 
-    }
-
-    @Override
-    public boolean equals(Object another) {
-        return false;
-    }
-
-    @Override
-    public String toString() {
-        return "";
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
     }
 
     @Override

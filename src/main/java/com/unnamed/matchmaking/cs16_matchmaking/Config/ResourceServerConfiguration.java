@@ -1,5 +1,7 @@
 package com.unnamed.matchmaking.cs16_matchmaking.Config;
 
+import com.unnamed.matchmaking.cs16_matchmaking.security.LoginSocialSuccessHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -14,7 +16,10 @@ import org.springframework.stereotype.Component;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@RequiredArgsConstructor
 public class ResourceServerConfiguration {
+
+    private final LoginSocialSuccessHandler loginSocialSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
@@ -23,9 +28,11 @@ public class ResourceServerConfiguration {
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize ->{
-                    authorize.requestMatchers("login").permitAll();
+                    authorize.requestMatchers("/login/**", "/oauth2/**").permitAll();
                     authorize.anyRequest().authenticated();
                 })
+                .oauth2Login(oauth ->
+                        oauth.successHandler(loginSocialSuccessHandler))
                 .build();
     }
 
