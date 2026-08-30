@@ -118,19 +118,18 @@ public class PlayerServiceTest {
 
     @Test
     void shouldReturnWhenPlayerNotFoundExceptionWhetherPlayerNotExist (){
+        PlayerRequestDTO request = new PlayerRequestDTO(
+                null,
+                "Luiz",
+                Ranking.BRONZE_1,
+                0,
+                0,
+                "Brasil",
+                null,
+                null,
+                null);
+
         assertThrows(PlayerNotFoundException.class, () -> {
-
-            PlayerRequestDTO request = new PlayerRequestDTO(
-                   null,
-                    "Luiz",
-                    Ranking.BRONZE_1,
-                    0,
-                    0,
-                    "Brasil",
-                    null,
-                    null,
-                    null);
-
             playerService.savePlayer(request);
         }, "Player não encontrado.");
     }

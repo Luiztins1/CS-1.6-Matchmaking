@@ -47,7 +47,7 @@ public class UserAuthController {
         return ResponseEntity.ok(userAuthList);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/update")
     public ResponseEntity<UserAuthResponseDTO> updateUserAuth(@PathVariable UUID id, @RequestBody @Valid UserAuthRequestDTO userAuthRequestDTO) {
         return userAuthService.updateUserAuth(id, userAuthRequestDTO)
                 .map(UserAuthMapper::toDto)
@@ -55,13 +55,13 @@ public class UserAuthController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{login}")
+    @DeleteMapping("/{login}/cancel")
     public ResponseEntity<Void> cancelUserAuth(@PathVariable @Valid String login) {
         userAuthService.cancelUserAuth(login);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/find")
     public ResponseEntity<UserAuthResponseDTO> findById(@PathVariable UUID id) {
         return userAuthService.findById(id)
                 .map(UserAuthMapper::toDto)
@@ -69,7 +69,7 @@ public class UserAuthController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{login}")
+    @GetMapping("/{login}/login")
     public ResponseEntity<UserAuthResponseDTO> findByLogin(@PathVariable String login) {
         return userAuthService.findByLogin(login)
                 .map(UserAuthMapper::toDto)

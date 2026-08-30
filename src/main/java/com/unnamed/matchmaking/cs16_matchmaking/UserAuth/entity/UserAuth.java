@@ -1,8 +1,8 @@
 package com.unnamed.matchmaking.cs16_matchmaking.UserAuth.entity;
 
 import com.unnamed.matchmaking.cs16_matchmaking.Auditable.Auditable;
-import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
@@ -21,6 +21,7 @@ public class UserAuth extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
     private UUID id;
 
     @Column(name = "login", nullable = false)
@@ -29,7 +30,9 @@ public class UserAuth extends Auditable implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Type(ListArrayType.class)
-    @Column(name = "roles", columnDefinition = "varchar[]", nullable = false)
+    @NotEmpty(message = "The list of roles can't be empty and null.")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
     private List<String> roles;
 }
