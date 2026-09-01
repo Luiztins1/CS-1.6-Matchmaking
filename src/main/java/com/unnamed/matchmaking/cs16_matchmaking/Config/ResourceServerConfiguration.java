@@ -25,6 +25,7 @@ public class ResourceServerConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize ->{
@@ -33,6 +34,10 @@ public class ResourceServerConfiguration {
                 })
                 .oauth2Login(oauth ->
                         oauth.successHandler(loginSocialSuccessHandler))
+
+                .oauth2ResourceServer(
+                        oauth2 ->
+                                oauth2.jwt(Customizer.withDefaults()))
                 .build();
     }
 
