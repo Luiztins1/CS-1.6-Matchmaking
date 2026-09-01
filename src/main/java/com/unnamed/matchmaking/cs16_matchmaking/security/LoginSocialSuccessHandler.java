@@ -8,8 +8,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.configurers.SecurityContextConfigurer;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -42,9 +44,18 @@ public class LoginSocialSuccessHandler extends SavedRequestAwareAuthenticationSu
         UserAuth user = userAuthService.findByLogin(login)
                 .orElseGet(() -> registerUserAuth(login));
 
-        CustomAuthentication customAuthentication = new CustomAuthentication(user);
+        var authorities = user.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_"  + role))
+                .toList();
 
-        SecurityContextHolder.getContext().setAuthentication(customAuthentication);
+        Authentication customAuth = new UsernamePasswordAuthenticationToken(
+                user,
+                null,
+                authorities
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(customAuth);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 
