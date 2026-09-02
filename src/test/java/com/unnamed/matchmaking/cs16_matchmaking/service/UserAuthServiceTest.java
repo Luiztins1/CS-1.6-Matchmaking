@@ -1,9 +1,9 @@
 package com.unnamed.matchmaking.cs16_matchmaking.service;
 
-import com.unnamed.matchmaking.cs16_matchmaking.UserAuth.dto.UserAuthRequestDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.UserAuth.entity.UserAuth;
-import com.unnamed.matchmaking.cs16_matchmaking.UserAuth.repository.UserAuthRepository;
-import com.unnamed.matchmaking.cs16_matchmaking.UserAuth.service.UserAuthService;
+import com.unnamed.matchmaking.cs16_matchmaking.userAuth.dto.UserAuthRequestDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.userAuth.entity.UserAuth;
+import com.unnamed.matchmaking.cs16_matchmaking.userAuth.repository.UserAuthRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.userAuth.service.UserAuthService;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.DuplicateException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.LoginNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;

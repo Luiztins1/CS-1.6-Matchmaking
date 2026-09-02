@@ -1,14 +1,14 @@
 package com.unnamed.matchmaking.cs16_matchmaking.service;
 
-import com.unnamed.matchmaking.cs16_matchmaking.Lobby.dto.LobbyResponseDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
-import com.unnamed.matchmaking.cs16_matchmaking.Lobby.mapper.LobbyMapper;
-import com.unnamed.matchmaking.cs16_matchmaking.Lobby.repository.LobbyRepository;
-import com.unnamed.matchmaking.cs16_matchmaking.Lobby.service.LobbyService;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.repository.MatchRepository;
-import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
-import com.unnamed.matchmaking.cs16_matchmaking.Player.repository.PlayerRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.lobby.dto.LobbyResponseDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.lobby.entity.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.lobby.mapper.LobbyMapper;
+import com.unnamed.matchmaking.cs16_matchmaking.lobby.repository.LobbyRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.lobby.service.LobbyService;
+import com.unnamed.matchmaking.cs16_matchmaking.match.entity.Match;
+import com.unnamed.matchmaking.cs16_matchmaking.match.repository.MatchRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.player.entity.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.player.repository.PlayerRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.Ranking;

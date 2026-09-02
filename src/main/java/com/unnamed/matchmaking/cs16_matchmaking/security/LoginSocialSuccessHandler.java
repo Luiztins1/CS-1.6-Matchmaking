@@ -1,15 +1,13 @@
 package com.unnamed.matchmaking.cs16_matchmaking.security;
 
-import com.unnamed.matchmaking.cs16_matchmaking.UserAuth.dto.UserAuthRequestDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.UserAuth.entity.UserAuth;
-import com.unnamed.matchmaking.cs16_matchmaking.UserAuth.service.UserAuthService;
-import com.unnamed.matchmaking.cs16_matchmaking.exceptions.LoginNotFoundException;
+import com.unnamed.matchmaking.cs16_matchmaking.userAuth.dto.UserAuthRequestDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.userAuth.entity.UserAuth;
+import com.unnamed.matchmaking.cs16_matchmaking.userAuth.service.UserAuthService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.web.configurers.SecurityContextConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor

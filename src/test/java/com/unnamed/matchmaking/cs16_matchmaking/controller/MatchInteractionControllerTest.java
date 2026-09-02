@@ -1,27 +1,28 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.MatchInteraction.Controller.MatchInteractionController;
-import com.unnamed.matchmaking.cs16_matchmaking.MatchInteraction.dto.MatchInteractionRequestDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.MatchInteraction.dto.MatchInteractionResponseDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.MatchInteraction.service.MatchInteractionService;
-import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.configTest.TestSecurityConfig;
+import com.unnamed.matchmaking.cs16_matchmaking.lobby.entity.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.match.entity.Match;
+import com.unnamed.matchmaking.cs16_matchmaking.matchInteraction.controller.MatchInteractionController;
+import com.unnamed.matchmaking.cs16_matchmaking.matchInteraction.dto.MatchInteractionRequestDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.matchInteraction.service.MatchInteractionService;
+import com.unnamed.matchmaking.cs16_matchmaking.player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import java.time.Instant;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.UUID;
 
 @WebMvcTest(MatchInteractionController.class)
+@Import(TestSecurityConfig.class)
 @ActiveProfiles("test")
 public class MatchInteractionControllerTest {
 
@@ -61,18 +63,30 @@ public class MatchInteractionControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldHandlerMatchInteraction() throws Exception{
         when(matchInteractionService.handlerMatchInteraction(matchInteractionRequestDTO))
                 .thenReturn(true);
 
         mvc.perform(post("/api/v1/match-interactions")
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(matchInteractionRequestDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
-
     }
 
     @Test
+    @WithMockUser(roles = "USER")
+    void shouldForbiddenWhenUserNotHasPermissionForHandlerMatchInteraction() throws Exception{
+        mvc.perform(post("/api/v1/match-interactions")
+                        .with(csrf())
+                        .content(objectMapper.writeValueAsString(matchInteractionRequestDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnFalseHandlerMatchInteraction() throws Exception{
         MatchInteractionRequestDTO request = createDefaultMatchInteraction(InteractionEvent.MATCHING, matchInit.getId(), playerInit.getId());
         when(matchInteractionService.handlerMatchInteraction(request))
