@@ -1,8 +1,8 @@
 package com.unnamed.matchmaking.cs16_matchmaking.repository;
 
-import com.unnamed.matchmaking.cs16_matchmaking.UserAuth.dto.UserAuthRequestDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.UserAuth.entity.UserAuth;
-import com.unnamed.matchmaking.cs16_matchmaking.UserAuth.repository.UserAuthRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.userAuth.dto.UserAuthRequestDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.userAuth.entity.UserAuth;
+import com.unnamed.matchmaking.cs16_matchmaking.userAuth.repository.UserAuthRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 

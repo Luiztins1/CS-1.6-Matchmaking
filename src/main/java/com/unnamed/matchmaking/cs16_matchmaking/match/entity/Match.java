@@ -1,0 +1,50 @@
+package com.unnamed.matchmaking.cs16_matchmaking.match.entity;
+
+import com.unnamed.matchmaking.cs16_matchmaking.auditable.Auditable;
+import com.unnamed.matchmaking.cs16_matchmaking.lobby.entity.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
+import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
+import com.unnamed.matchmaking.cs16_matchmaking.enums.TypeMatch;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.UUID;
+
+@Entity
+@Table(name = "match")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+public class Match extends Auditable implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
+    private UUID id;
+
+    @Column(name = "match_name", length = 32,nullable = false)
+    private String nameMatch;
+
+    @Column(name = "game_map", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private GameMap map;
+
+    @Column(name = "match_state", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MatchState matchState;
+
+    @Column(name = "type_match", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TypeMatch typeMatch;
+
+    @Column(name = "time_match_map", nullable = false)
+    private Instant timeMatchMap;
+
+    @OneToOne(mappedBy = "matchLobby", cascade = CascadeType.ALL)
+    private Lobby lobbyMatch;
+
+}

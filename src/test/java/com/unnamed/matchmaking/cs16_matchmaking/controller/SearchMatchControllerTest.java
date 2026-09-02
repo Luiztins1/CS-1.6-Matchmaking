@@ -1,27 +1,30 @@
 package com.unnamed.matchmaking.cs16_matchmaking.controller;
 
-import com.unnamed.matchmaking.cs16_matchmaking.Lobby.entity.Lobby;
-import com.unnamed.matchmaking.cs16_matchmaking.MainController.rest.SearchMatchController;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.dto.MatchResponseDTO;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.entity.Match;
-import com.unnamed.matchmaking.cs16_matchmaking.Match.repository.MatchRepository;
-import com.unnamed.matchmaking.cs16_matchmaking.Player.entity.Player;
+import com.unnamed.matchmaking.cs16_matchmaking.configTest.TestSecurityConfig;
+import com.unnamed.matchmaking.cs16_matchmaking.lobby.entity.Lobby;
+import com.unnamed.matchmaking.cs16_matchmaking.mainController.rest.SearchMatchController;
+import com.unnamed.matchmaking.cs16_matchmaking.match.dto.MatchResponseDTO;
+import com.unnamed.matchmaking.cs16_matchmaking.match.entity.Match;
+import com.unnamed.matchmaking.cs16_matchmaking.match.repository.MatchRepository;
+import com.unnamed.matchmaking.cs16_matchmaking.player.entity.Player;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.GameMap;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.MatchState;
 import com.unnamed.matchmaking.cs16_matchmaking.enums.TypeMatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.time.Instant;
@@ -30,6 +33,7 @@ import java.util.List;
 import java.util.UUID;
 
 @WebMvcTest(SearchMatchController.class)
+@Import(TestSecurityConfig.class)
 @ActiveProfiles("test")
 public class SearchMatchControllerTest {
 
@@ -50,20 +54,34 @@ public class SearchMatchControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldSearchMatchMap() throws Exception{
 
         when(matchRepository.findByMapEquals(Mockito.eq(matchInit.getMap())))
                 .thenReturn(List.of(matchInit));
 
         mvc.perform(get("/api/v1/search-matchs")
+                        .with(csrf())
                 .param("map", matchInit.getMap().toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
+    @WithMockUser(roles = "USER")
+    void shouldForbiddenWhenUserNotHasPermissionForSearchMatchMap() throws Exception{
+        mvc.perform(get("/api/v1/search-matchs")
+                        .with(csrf())
+                        .param("map", matchInit.getMap().toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnNotFoundSearchMatchMap() throws Exception{
         mvc.perform(get("/api/v1/search-matchs")
+                        .with(csrf())
                         .param("map", matchInit.getMap().toString())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
