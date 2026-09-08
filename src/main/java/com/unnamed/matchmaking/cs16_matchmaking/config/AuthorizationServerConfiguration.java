@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 public class AuthorizationServerConfiguration {
 
     @Bean
-    @Order(2)
+    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
 
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(httpSecurity);
@@ -58,8 +58,10 @@ public class AuthorizationServerConfiguration {
         return httpSecurity.build();
     }
 
+    @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer() {
         return (context) -> {
+
             if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())) {
 
                 Authentication principal = context.getPrincipal();
@@ -83,7 +85,6 @@ public class AuthorizationServerConfiguration {
                 .builder()
                 .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
                 .accessTokenTimeToLive(Duration.ofMinutes(60))
-                .accessTokenTimeToLive(Duration.ofMinutes(90))
                 .build();
     }
 
