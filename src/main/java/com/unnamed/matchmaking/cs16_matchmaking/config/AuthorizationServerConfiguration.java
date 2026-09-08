@@ -72,8 +72,7 @@ public class AuthorizationServerConfiguration {
 
                 context.getClaims().claims(claims -> {
                     claims.put("roles", authorities);
-                    claims.put("tenant_id", "empresa_xyz");
-                    claims.put("user_email", principal.getName() + "@empresa.com");
+                    claims.put("tenant_id", "cs16mt");
                 });
             }
         };
