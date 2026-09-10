@@ -15,6 +15,13 @@ Esse projeto moderniza a experiência do CS 1.6, trazendo funcionalidades de pla
 * **Mapper Pattern:** Padrão para converter entidades.
 * **SOLID:** SRP(Single Responsibility Principle) e DIP (Dependency Inversion Principle).
 
+# 📝 Documentação dos Endpoints
+A API possui documentação interativa e testável integrada com Swagger UI (OpenAPI 3). Para visualizar todos os endpoints em tempo real, os schemas de dados e realizar testes diretamente pelo navegador, siga os passos:
+
+Suba a aplicação localmente (docker compose).
+
+Acesse o endereço no seu navegador: http://localhost:8080/swagger-ui.html
+
 # ⚙️ Configuração das Variáveis de Ambiente
 
 A API utiliza variáveis de ambiente para proteger dados sensíveis (como credenciais do banco de dados). Antes de rodar, certifique-se de ter um arquivo de configuração com as seguintes chaves:
@@ -49,7 +56,7 @@ spring:
     volumes:
       - ./Postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: mixs
+      POSTGRES_DB: cs16mt
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
