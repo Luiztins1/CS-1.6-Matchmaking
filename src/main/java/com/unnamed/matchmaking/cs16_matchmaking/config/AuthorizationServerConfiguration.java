@@ -57,7 +57,7 @@ public class AuthorizationServerConfiguration {
 
         return httpSecurity.build();
     }
-    
+
     @Bean
     public TokenSettings tokenSettings(){
         return TokenSettings

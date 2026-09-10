@@ -2,6 +2,8 @@ package com.unnamed.matchmaking.cs16_matchmaking.security;
 
 import com.unnamed.matchmaking.cs16_matchmaking.client.entity.Client;
 import com.unnamed.matchmaking.cs16_matchmaking.client.service.ClientService;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ClientNotFoundException;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -33,10 +35,11 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
     public RegisteredClient findByClientId(String clientId) {
         Client client = clientService.findClientByLogin(clientId);
 
-        if(client == null ) return null;
+        if(client == null ) throw new ClientNotFoundException("Cliente não encontrado.");
 
         return RegisteredClient
                 .withId(client.getClientLogin())
+                .clientId(client.getClientLogin())
                 .clientSecret(client.getClientPassword())
                 .scope(client.getScope())
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
