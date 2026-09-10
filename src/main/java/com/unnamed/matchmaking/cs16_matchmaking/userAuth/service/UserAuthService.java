@@ -9,6 +9,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.exceptions.LoginNotFoundExceptio
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.UserAuthNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,24 +22,23 @@ import java.util.UUID;
 public class UserAuthService {
 
     private final UserAuthRepository userAuthRepository;
-    //private final PasswordEnconder passwordEnconder;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserAuth registerUserAuth(UserAuthRequestDTO userAuthRequestDTO) {
 
         if(userAuthRequestDTO == null) throw new ResourceNotFoundException("Dto está vazio.");
 
-        var userAuth = UserAuthMapper.toEntity(userAuthRequestDTO);
-
-        if(userAuth.getId() == null)
+        if(userAuthRequestDTO.id() == null)
             throw new UserAuthNotFoundException("Usuário não encontrado");
 
+        if(userAuthRepository.existsByLogin(userAuthRequestDTO.login()))
+            throw new DuplicateException("Usuário já cadastrado");
+
+        var userAuth = UserAuthMapper.toEntity(userAuthRequestDTO);
 
         var password = userAuth.getPassword();
-        //userAuth.setPassword(passwordEncoder.encode(password));
-
-        if(userAuthRepository.existsByLogin(userAuth.getLogin()))
-            throw new DuplicateException("Usuário já cadastrado");
+        userAuth.setPassword(passwordEncoder.encode(password));
 
         return userAuthRepository.save(userAuth);
     }

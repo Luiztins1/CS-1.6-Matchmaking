@@ -3,10 +3,12 @@ package com.unnamed.matchmaking.cs16_matchmaking.configTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @TestConfiguration
+@EnableWebSecurity
 public class TestSecurityConfig {
 
     @Bean
@@ -22,6 +24,7 @@ public class TestSecurityConfig {
                     authorize.requestMatchers("/api/v1/search-matchs/**").hasRole("ADMIN");
                     authorize.requestMatchers("/api/v1/players/**").hasRole("ADMIN");
                     authorize.requestMatchers("/api/v1/auth/users/**").hasRole("ADMIN");
+                    authorize.requestMatchers("/api/v1/clients/**").hasRole("ADMIN");
                     authorize.anyRequest().authenticated();
                 })
 

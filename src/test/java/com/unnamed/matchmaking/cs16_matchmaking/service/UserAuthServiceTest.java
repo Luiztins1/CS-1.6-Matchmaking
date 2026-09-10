@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -33,6 +34,9 @@ public class UserAuthServiceTest {
     @Mock
     UserAuthRepository userAuthRepository;
 
+    @Mock
+    PasswordEncoder passwordEncoder;
+
     @Captor
     private ArgumentCaptor<UserAuth> authArgumentCaptor;
 
@@ -47,8 +51,11 @@ public class UserAuthServiceTest {
 
     @Test
     void shouldRegisterUserAuth(){
+        when(passwordEncoder.encode(anyString())).thenAnswer(invocation ->
+                invocation.getArgument(0));
+
         when(userAuthRepository.save(Mockito.any(UserAuth.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenReturn(userAuth);
 
         UserAuth user = userAuthService.registerUserAuth(userAuthRequestDTO);
 
@@ -61,6 +68,9 @@ public class UserAuthServiceTest {
         assertThat(userCaptor.getLogin()).isNotBlank();
         assertThat(userCaptor.getPassword()).isNotBlank();
         assertThat(userCaptor.getRoles()).isNotEmpty();
+
+        verify(passwordEncoder, times(1))
+                .encode(anyString());
 
     }
 
@@ -95,7 +105,7 @@ public class UserAuthServiceTest {
 
         assertThrows(DuplicateException.class, () -> {
             userAuthService.registerUserAuth(requestDTO);
-        }, "Dto está vazio.");
+        }, "Usuário já cadastrado.");
 
         verify(userAuthRepository, times(1))
                 .existsByLogin(requestDTO.login());

@@ -1,14 +1,15 @@
 package com.unnamed.matchmaking.cs16_matchmaking.config;
 
-import com.unnamed.matchmaking.cs16_matchmaking.security.LoginSocialSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,22 +20,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class ResourceServerConfiguration {
 
-    private final LoginSocialSuccessHandler loginSocialSuccessHandler;
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    @Order(2)
+    public SecurityFilterChain securityFilterChainDefault(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                .securityMatcher("/api/**", "/oauth2/**")
                 .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults())
+
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
                 .authorizeHttpRequests(authorize ->{
                     authorize.requestMatchers("/login/**", "/oauth2/**").permitAll();
-                    authorize.requestMatchers("/api/v1/matches/**").hasRole("ADMIN");
                     authorize.anyRequest().authenticated();
                 })
-                .oauth2Login(oauth ->
-                        oauth.successHandler(loginSocialSuccessHandler))
 
                 .oauth2ResourceServer(
                         oauth2 ->
@@ -44,10 +44,25 @@ public class ResourceServerConfiguration {
     }
 
     @Bean
+    @Order(3)
+    public SecurityFilterChain securityFilterChainFormLogin(HttpSecurity httpSecurity) throws Exception{
+        return httpSecurity
+                .csrf(Customizer.withDefaults())
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .formLogin(Customizer.withDefaults())
+                .authorizeHttpRequests(authorize ->{
+                    authorize.requestMatchers("/login/**", "/css/**", "/js/**").permitAll();
+                    authorize.anyRequest().authenticated();
+                })
+                .build();
+    }
+
+    @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter(){
         var authoritiesConverter = new JwtGrantedAuthoritiesConverter();
         authoritiesConverter.setAuthoritiesClaimName("roles");
-        authoritiesConverter.setAuthorityPrefix("ROLE_");
+        authoritiesConverter.setAuthorityPrefix("");
 
         var convert = new JwtAuthenticationConverter();
         convert.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
