@@ -42,7 +42,7 @@ public class AuthorizationServerConfiguration {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChainAuthorizationServer(HttpSecurity httpSecurity) throws Exception{
 
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(httpSecurity);
 
@@ -57,27 +57,7 @@ public class AuthorizationServerConfiguration {
 
         return httpSecurity.build();
     }
-
-    @Bean
-    public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer() {
-        return (context) -> {
-
-            if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())) {
-
-                Authentication principal = context.getPrincipal();
-
-                Set<String> authorities = principal.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.toSet());
-
-                context.getClaims().claims(claims -> {
-                    claims.put("roles", authorities);
-                    claims.put("tenant_id", "cs16mt");
-                });
-            }
-        };
-    }
-
+    
     @Bean
     public TokenSettings tokenSettings(){
         return TokenSettings

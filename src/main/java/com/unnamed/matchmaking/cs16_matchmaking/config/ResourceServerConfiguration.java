@@ -22,7 +22,7 @@ public class ResourceServerConfiguration {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChainDefault(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .securityMatcher("/api/**", "/oauth2/**")

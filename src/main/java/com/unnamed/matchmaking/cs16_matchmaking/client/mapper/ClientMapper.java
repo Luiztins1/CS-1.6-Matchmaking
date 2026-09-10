@@ -25,9 +25,9 @@ public class ClientMapper {
 
         client.setId(clientRequestDto.id());
         client.setClientLogin(clientRequestDto.clientLogin());
-        client.setClientPassword(client.getClientPassword());
-        client.setRedirectUri(client.getRedirectUri());
-        client.setScope(client.getScope());
+        client.setClientPassword(clientRequestDto.clientPassword());
+        client.setRedirectUri(clientRequestDto.redirectUri());
+        client.setScope(clientRequestDto.scope());
 
         return client;
     }

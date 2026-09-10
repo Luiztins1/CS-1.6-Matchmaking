@@ -29,17 +29,16 @@ public class UserAuthService {
 
         if(userAuthRequestDTO == null) throw new ResourceNotFoundException("Dto está vazio.");
 
-        var userAuth = UserAuthMapper.toEntity(userAuthRequestDTO);
-
-        if(userAuth.getId() == null)
+        if(userAuthRequestDTO.id() == null)
             throw new UserAuthNotFoundException("Usuário não encontrado");
 
+        if(userAuthRepository.existsByLogin(userAuthRequestDTO.login()))
+            throw new DuplicateException("Usuário já cadastrado");
+
+        var userAuth = UserAuthMapper.toEntity(userAuthRequestDTO);
 
         var password = userAuth.getPassword();
         userAuth.setPassword(passwordEncoder.encode(password));
-
-        if(userAuthRepository.existsByLogin(userAuth.getLogin()))
-            throw new DuplicateException("Usuário já cadastrado");
 
         return userAuthRepository.save(userAuth);
     }

@@ -6,6 +6,7 @@ import com.unnamed.matchmaking.cs16_matchmaking.client.mapper.ClientMapper;
 import com.unnamed.matchmaking.cs16_matchmaking.client.repository.ClientRepository;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ClientNotFoundException;
 import com.unnamed.matchmaking.cs16_matchmaking.exceptions.DuplicateException;
+import com.unnamed.matchmaking.cs16_matchmaking.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,9 +24,9 @@ public class ClientService {
         Client client = ClientMapper.toEntity(clientRequestDto);
 
         if(client == null)
-            throw new ClientNotFoundException("Cliente não existe.");
+            throw new ResourceNotFoundException("Dto vazio.");
 
-        if(clientRepository.existsClientByLoginOrId(client.getClientLogin(), client.getId()))
+        if(clientRepository.existsByClientLoginOrId(client.getClientLogin(), client.getId()))
             throw new DuplicateException("Cliente já registrado.");
 
         var password = client.getClientPassword();
