@@ -51,7 +51,7 @@ spring:
 
 * **Observação:** Caso você já tenha o PostgreSQL rodando localmente na porta padrão (5432), mantenha a porta externa mapeada como está no arquivo de exemplo (geralmente 5433:5432) para evitar conflitos. Caso contrário, mude para 5432:5432
 ```yaml
-  mixs:
+  cs16mt:
     image: postgres:16
     volumes:
       - ./Postgres:/var/lib/postgresql/data
